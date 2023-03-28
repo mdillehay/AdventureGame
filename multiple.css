@@ -1,0 +1,100 @@
+
+newCharacter {
+    width: 1fr;
+    align: center middle;
+    margin: 2;
+}
+
+newCharacterStats {
+    width: 2fr;
+    /* height: 100h; */
+
+    layout: grid;
+    grid-size: 2 6;
+    grid-columns: 35% 65%;
+    /* grid-rows: 10%; */
+    /* align-horizontal: center; */
+    border: round;
+
+}
+
+newCharacterRace {
+    width: 1fr;
+}
+
+.label {
+    text-align: right;
+    border: round;
+    width: 100w;
+    align: right middle;
+}
+
+Label {
+    text-align: right;
+}
+
+newCharacterStatsLabel {
+    width: 30;
+    text-align:  right;
+}
+
+    
+
+
+/* Button {
+    margin: 3;
+    align: center middle; */
+/* } */
+
+Screen {
+    align: center middle;
+    border: heavy round;
+    layers: below above;
+}
+
+/* Vertical {
+    width: 50;
+} */
+
+
+Cover {
+    align: center middle;
+    background: blue;
+    border: heavy round;
+}
+
+#words {
+    content-align-horizontal: center;
+    color: azure;
+    text-style: bold italic;
+}
+
+#words2 {
+    content-align-horizontal: center;
+    color: azure;
+}
+
+#charSubmit {
+    margin: 1;
+    column-span: 2;
+    border: dashed;
+    width: 5fr;
+    
+}
+
+sidebar {
+    width: 30;
+    layer: above;
+    offset-x: -100%;
+    dock: left;
+    border: heavy round deeppink;
+    text-style: bold;
+    
+}
+
+sidebar.-active {
+    offset-x: 0;
+    layer: above;
+    width: 30;
+    dock: left;
+}
