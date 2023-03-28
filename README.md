@@ -1,2 +1,2 @@
 # AdventureGame
-Small Adventure Game using to Textual ... in order to learn Textual
+Small Adventure Game using Textual ... in order to learn Textual
