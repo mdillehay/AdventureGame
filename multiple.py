@@ -10,6 +10,11 @@ from textual.screen import Screen
 
 dbConn, dbCur = game.db_init()
 
+'''
+This is a little project to better understand how Textual works in order to use it
+for important things.
+
+'''
 
 class Cover(Screen):
     BINDINGS = [("escape", "app.pop_screen", "Pop screen")]
