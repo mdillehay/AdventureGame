@@ -1,7 +1,7 @@
 from textual.app import App, ComposeResult, RenderResult
 from textual.events import Key
 from textual.widget import Widget
-from textual.widgets import Button, Header, Label, Input, Static, Footer, TabbedContent, TabPane, RadioButton, RadioSet
+from textual.widgets import Button, Header, Label, Input, Static, Footer, TabbedContent, TabPane, RadioButton, RadioSet, Markdown
 from textual.reactive import reactive
 import initial_game as game
 import time
@@ -15,13 +15,39 @@ This is a little project to better understand how Textual works in order to use 
 for important things.
 
 '''
+MAIN_TITLE = """
+             _                 _                     _____                      
+    /\      | |               | |                   / ____|                     
+   /  \   __| |_   _____ _ __ | |_ _   _ _ __ ___  | |  __  __ _ _ __ ___   ___ 
+  / /\ \ / _` \ \ / / _ \ '_ \| __| | | | '__/ _ \ | | |_ |/ _` | '_ ` _ \ / _ \\
+ / ____ \ (_| |\ V /  __/ | | | |_| |_| | | |  __/ | |__| | (_| | | | | | |  __/
+/_/    \_\__,_| \_/ \___|_| |_|\__|\__,_|_|  \___|  \_____|\__,_|_| |_| |_|\___|
+                                                                                
+    
+    """
+
+
+DWARVES = """\
+# Dwarf
+
+Bold and hardy, dwarves are known as skilled warriors, miners,
+and workers of stone and metal. Though they stand well under 
+5 feet tall, dwarves are so broad and compact that they
+can weigh as much as a human standing nearly two feet taller.
+Their courage and endurance are also easily a match for any of
+the larger folk.
+
+"""
+ELVES = game.ElfMark()
+HALFLING = game.HalflingMark()
+HUMANS = game.HumanMark()
 
 class Cover(Screen):
     BINDINGS = [("escape", "app.pop_screen", "Pop screen")]
 
     def compose(self) -> ComposeResult:
-        yield Static("This is the splash screen for the Game \nWhat will we see", id="words")
-        yield Static("Press escape to continue [blink]_[/]", id="words2")
+        yield Header()
+        yield Static(MAIN_TITLE, id="words")
         yield Footer()
 
 
@@ -42,14 +68,43 @@ class RaceScreen(Screen):
 class MenuScreen(Screen):
     BINDINGS = [("escape", "app.pop_screen", "Go Back")]
 
+    dwarf_subraces = ["Hill Dwarf", "Mountain Dwarf"]
+    elf_subraces = ["High Elf", "Wood Elf","Dark Elf (Drow)"]
+    halfling_subraces = ["Lightfoot","Stout"]
+    human_subraces = ["Calishite","Chondathan","Damaran","Illuskan","Mulan","Rashemi","Shou","Tethyrian","Turami"]
+    gnome_subraces = ["Forest Gnome","Rock Gnome"]
+    hum_sub_info = {"Calishite":game.Calishite(), "Chondathan": game.Chondathan(), "Damaran":game.Damaran(), "Illuskan":game.Illuskan(), "Mulan":game.Mulan(), "Rashemi":game.Rashemi(),
+                    "Shou":game.Shou(), "Tethyrian":game.Tethyrian(), "Turami":game.Turami()
+                    }
+
     def compose(self) -> ComposeResult:
         yield Footer()
 
         with TabbedContent():
-            with TabPane('Part 1'):
-                yield Static("This is ok")
-            with TabPane('Part 2'):
-                yield Static("More Information")
+            with TabPane('Dwarf'):
+                yield Markdown(DWARVES)
+                for sub in self.dwarf_subraces:
+                    yield RadioButton(sub) 
+            
+            with TabPane('Elf'):
+                yield Markdown(game.ElfMark())
+                for sub in self.elf_subraces:
+                    yield RadioButton(sub)
+
+            with TabPane("Halfling"):
+                yield Markdown(HALFLING)
+                for sub in self.halfling_subraces:
+                    yield RadioButton(sub)
+
+            with TabPane("Human"):
+                yield Markdown(HUMANS)
+                with TabbedContent():
+                    for sub in self.human_subraces:
+                        yield TabPane(sub, Markdown(self.hum_sub_info[sub]))
+
+            with TabPane("Dragonborn"):
+                yield Markdown(game.DragonbornMark())
+                yield RadioButton("Dragonborn")
 
             
 class EnterButton(Widget):
@@ -75,6 +130,7 @@ class sidebar(Widget):
             self.app.push_screen(MenuScreen())
 
 class newCharacterRace(Widget):
+
     def compose(self) -> ComposeResult:
         yield Label("Choose your Race...")
         yield RadioSet(
@@ -82,12 +138,27 @@ class newCharacterRace(Widget):
             "Elf",
             "Halfling",
             "Human",
-            "Drgonborn",
+            "Dragonborn",
             "Gnome",
             "Half-Elf",
             "Half-Orc",
             "Tiefling",
         )
+        yield Label(id="class_button_pressed")
+        yield Button("Test")
+
+    def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
+       self.query_one("#class_button_pressed", Label).update(
+            f"{event.pressed.label}")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        text_file = open("sample.txt", "wt")
+        text_file.write(str(self.query_one("#class_button_pressed").renderable))
+        text_file.close()
+
+
+
+
 
 class newCharacterClass(Widget):
     def compose(self) -> ComposeResult:
@@ -101,6 +172,7 @@ class newCharacterClass(Widget):
             "Monk",
             "Paladin"
         )
+
         
 
 
@@ -151,11 +223,15 @@ class newCharacter(Widget):
 
 class MainApp(App):
     CSS_PATH = "multiple.css"
-    SCREENS = {"cover": Cover(), "NewCharScreen": NewCharScreen()}
-    BINDINGS = [("m", "push_screen('cover')", "Cover"),
+    SCREENS = {"cover": Cover(),
+               "NewCharScreen": NewCharScreen(),
+               "MenuScreen": MenuScreen()}
+    BINDINGS = [("m", "push_screen('MenuScreen')", "Menu"),
                 ("q", "quit", "Quit"),
-                ("f", "toggle_class('sidebar', '-active')", "Show Sidebar")
+                ("f", "toggle_class('sidebar', '-active')", "Show Sidebar"),
+                ("t", "push_screen('cover')", "Title")
     ]
+
     TITLE = "Adventure Game Menu"
 
     def compose(self) -> ComposeResult:
@@ -164,9 +240,11 @@ class MainApp(App):
             yield newCharacter()
             yield newCharacterStats()
             yield newCharacterRace()
-            yield newCharacterRace()
+            yield newCharacterClass()
         yield Footer()
-        yield sidebar()        
+        yield sidebar()    
+
+        
 
 if __name__ == "__main__":
     app = MainApp()
