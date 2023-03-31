@@ -71,13 +71,11 @@ Cover {
 #words {
     content-align-horizontal: center;
     color: azure;
-    text-style: bold italic;
 }
 
 #words2 {
     content-align-horizontal: center;
     color: azure;
-    text-style: bold;
 }
 
 #charSubmit {

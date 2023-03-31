@@ -106,6 +106,23 @@ class MenuScreen(Screen):
                 yield Markdown(game.DragonbornMark())
                 yield RadioButton("Dragonborn")
 
+            with TabPane("Gnome"):
+                yield Markdown(game.GnomeMark())
+                for sub in self.gnome_subraces:
+                    yield RadioButton(sub)
+
+            with TabPane("Half-Elf"):
+                yield Markdown(game.HalfelfMark())
+                yield RadioButton("Half-Elf")
+
+            with TabPane("Half-Orc"):
+                yield Markdown(game.HalforcMark())
+                yield RadioButton("Half-Orc")
+
+            with TabPane("Tiefling"):
+                yield Markdown(game.TieflingMark())
+                yield RadioButton("Tiefling")
+
             
 class EnterButton(Widget):
     def compose(self) -> ComposeResult:

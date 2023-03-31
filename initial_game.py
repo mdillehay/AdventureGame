@@ -225,6 +225,43 @@ Gnomes take delight in life, enjoying every moment of invention, exploration, in
 """
     return content
 
+def HalfelfMark():
+    content = """\
+# Half-Elf
+
+Walking in two worlds but truly belonging to neither, half-elves combine what some say are the best qualities of their elf and human parents: 
+human curiosity, inventiveness, and ambition tempered by the refined senses, love of nature, and artistic tastes of the elves. Some half-elves 
+live among humans, set apart by their emotional and physical differences, watching friends and loved ones age while time barely touches them.
+Others live with the elves, growing restless as they reach adulthood in the timeless elven realms, while their peers continue to live as children.
+Many half-elves, unable to fit into either society, choose lives of solitary wandering or join with other misfits and outcasts in the adventuring 
+life.                
+"""
+    return content
+
+def HalforcMark():
+    content = """\
+# Half-Orc
+
+Whether united under the leadsership of a mighty warlock or having fought to a standstill after years of conflict, ord and human tribes sometimes 
+form aliances, joining forces into a larger horde to the terror of civilized lands nearby. When these alliances are sealed by marriages, half-orcs are born. 
+Some half-orcs rise to become proud chiefs of orc tribes, their human blood giving them an edge over their full-blooded orc rivals. Some venture into 
+the world to prove their worth among humans and other more civilized races. Many of these become adventurers, achieving greatness for their mighty 
+deeds and notoriety for their barbaric customs and savage fury.        
+"""
+    return content
+
+def TieflingMark():
+    content = """\
+# Tiefling
+
+To be greeted with stares and whispers, to suffer violence and insult on the street, to see mistrust and fear in every eye: this is the lot of the 
+tiefling. And to twist the knife, tieflings know that this is because of a pcat struck generations ago infused with the essence of Asmodeus--overlord 
+of the Nine Hells--into their bloodline. Their appearance and their nature are not their fault but the result of an ancient sin, for which they and 
+their children and their children's children will always be held accountable.        
+"""
+    return content
+
+
 class Spell:
     """Defines an individual Spell"""
 
