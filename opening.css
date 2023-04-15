@@ -1,0 +1,89 @@
+startScreenButton {
+    
+    width: 70%;
+   
+    
+}
+
+/* StartScreen {
+    align: center middle;
+} */
+
+/* Container {
+    align: center middle;
+    border: round;
+
+} */
+
+newCharacterStats {
+    /* width: 50; */
+    height: 70vh;
+    layout: grid;
+    grid-size: 2 6;
+    /* grid-columns: 1fr 2fr; */
+    border: round;
+
+
+}
+
+.fiftyPercent {
+    width: 50%
+}
+
+.containerBorder {
+    border: round;
+    align: center middle;
+    opacity: 1;
+}
+
+.startScreenBtn {
+    border: round;
+    align: center middle;
+    content-align-horizontal: center;
+
+}
+
+#startScreenMenu {
+    align: center middle;
+    layout: horizontal;
+}
+
+._1fr {
+    dock: bottom;
+    height: 20vh;
+    width: 25%;
+    align-horizontal: center;
+    opacity: 0;
+}
+
+
+#words {
+    content-align-horizontal: center;
+    color: azure;
+}
+
+/* Screen {
+    align: center middle;
+    border: heavy round;
+    layers: below above;
+} */
+
+/* ChooseRace {
+    align: center top;
+    height: 100%;
+
+
+} */
+
+/* Markdown {
+    height: 100%;
+} */
+
+/* TabbedContent {
+    height: 100vh;
+} */
+
+/* TabbedPane {
+    height: 100vh;
+} */
+
