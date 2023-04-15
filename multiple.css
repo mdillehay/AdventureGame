@@ -18,6 +18,30 @@ newCharacterStats {
 
 }
 
+startScreenButton {
+    
+    border: ascii;
+    align: center middle;
+    height: 25h;
+    max-width: 60w;
+   
+    
+}
+
+
+
+.startScreenBtn {
+    border: round;
+    align: center middle;
+    content-align-horizontal: center;
+
+}
+
+#startScreenMenu {
+    align: center middle;
+    width: auto;
+}
+
 newCharacterRace {
     width: 1fr;
 }
@@ -71,6 +95,7 @@ Cover {
 #words {
     content-align-horizontal: center;
     color: azure;
+    height: 45h;
 }
 
 #words2 {
