@@ -49,6 +49,17 @@ class Character:
         self.wisdom = wisdom
         self.charisma = charisma
 
+        self.sex = ""
+        self.height = ""
+        self.weight = ""
+        self.alignment = "" 
+        self.language_prim = "" 
+        self.language_sec = "" 
+
+
+        
+        
+
     def setName(self, name: str) -> None:
         self.name = name
 
@@ -74,12 +85,30 @@ class Character:
         self.wisdom = wisdom
 
     def setCharisma(self, charisma: int) -> None:
-        self.charisma = charisma    
+        self.charisma = charisma   
 
-class MountainDwarf(Character):
+class Dwarf(Character):
     def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
+        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+
+        self.setConstitution(self.constitution + 2)
+        self.darkvision = True
+        self.combat_training = ["battleaxe","handaxe","light hammer","warhammer"]
+        self.speed = 25
+        self.poison_adv = True
+        self.tool_prof = "" 
+        self.stonecunning = True
+        self.language_prim = "Common"
+        self.language_prim = "Dwarvish"
+
+
+class MountainDwarf(Dwarf):
+    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
+        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+
+        self.setStrength(self.strength + 2)
+        self.armor_prof = ["light","medium"]
         
-        self.setStrength(2)
         
 
 
@@ -106,6 +135,35 @@ class Wizard(Character):
     
     def getGender(self):
         return self.gender
+
+
+def AbilityPointMark():
+    content = """\
+# Choose Your Ability Points
+
+You have 27 points to spend on your ability scores. The cost of each score is shown on the Ability Score Point Cost table (below). Using this method, 15 is
+the highest score you can have before applying racial increases. You can't have a score lower than 8.
+
+    """
+    return content
+    
+def AbScoreTable():
+    content = """\
+# Ability Point Score Table
+
+| Score    | Cost    |
+|----------|---------|
+| '8'      | 0       |
+| '9'      | 1       |
+| '10'     | 2       |
+| '11'     | 3       |
+| '12'     | 4       |
+| '13'     | 5       |
+| '14'     | 7       |
+| '15'     | 9       |   
+        """
+    return content
+
 
 
 def DwarfMark():

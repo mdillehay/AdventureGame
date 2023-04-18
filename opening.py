@@ -51,13 +51,29 @@ class StartScreen(Widget):
         yield Container(startScreenButton(), classes="containerBorder")
 
 class AbilityScores(Screen):
-    def compose(self) -> ComposeResult:
-        yield Footer()
-        yield Horizontal(
-            Container(newCharacterStats(), classes="fiftyPercent"),
-            Container(newCharacterStats(), classes="fiftyPercent"),
-        )
+    TITLE = "Choose Ability Score"
 
+    data = [
+        ("Score","Cost"),
+        ("8","0"),
+        ("9","1"),
+        ("10","2"),
+        ("11","3"),
+        ("12","4"),
+        ("13","5"),
+        ("14","7"),
+        ("15","9")
+    ]
+
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
+        yield Markdown(game.AbilityPointMark(), classes="twentyPercentHeight")
+        yield Horizontal(
+            Container(newCharacterStats(), classes="fiftyPercent_AbScoreScreen"),
+            Container(Markdown(game.AbScoreTable(),classes="AbScoreData"), classes="AbScoreData"),
+            classes="AbScoreHorizHeight"
+        )
 
 
 class newCharacterStats(Widget):

@@ -17,7 +17,7 @@ startScreenButton {
 
 newCharacterStats {
     /* width: 50; */
-    height: 70vh;
+    /* height: 70vh; */
     layout: grid;
     grid-size: 2 6;
     /* grid-columns: 1fr 2fr; */
@@ -26,8 +26,26 @@ newCharacterStats {
 
 }
 
-.fiftyPercent {
-    width: 50%
+.AbScoreData {
+    align: center middle;
+    width: 50w;
+}
+
+.DTCenter {
+    align: center middle;
+    width: 50%;
+}
+
+.fiftyPercent_AbScoreScreen {
+    width: 50%;
+}
+
+.AbScoreHorizHeight {
+    height: 65%;
+}
+
+.twentyPercentHeight {
+    height: 30%;
 }
 
 .containerBorder {
