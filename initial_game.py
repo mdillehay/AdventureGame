@@ -2,6 +2,8 @@ import sqlite3
 import os
 import sys
 import time
+from textual.reactive import reactive
+from textual import *
 
 #Initialized the DB and creates the connector and cursor for the rest of the app
 def db_init():
@@ -37,6 +39,18 @@ CREATE TABLE IF NOT EXISTS Spells
 
     conn.commit()
     return conn, cur
+
+
+def ClassGetr(class_choice):
+    character_classes = {
+        "Hill Dwarf": HillDwarf(),
+        "Mountain Dwarf":MountainDwarf(),
+    }
+
+    class_return = character_classes[class_choice]
+    return class_return
+
+
 
 
 class Character:
@@ -110,8 +124,11 @@ class MountainDwarf(Dwarf):
         self.armor_prof = ["light","medium"]
         
         
+class HillDwarf(Dwarf):
+    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
+        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
 
-
+        self.setStrength(self.strength + 4)
 
 class Wizard(Character):
 
@@ -138,11 +155,14 @@ class Wizard(Character):
 
 
 def AbilityPointMark():
+    classChoice = "EXAMPLE"
+
     content = """\
 # Choose Your Ability Points
 
 You have 27 points to spend on your ability scores. The cost of each score is shown on the Ability Score Point Cost table (below). Using this method, 15 is
-the highest score you can have before applying racial increases. You can't have a score lower than 8.
+the highest score you can have before applying racial increases. You can't have a score lower than 8.\n
+The racial bonuses for a {{classChoice}} are reflected below.
 
     """
     return content

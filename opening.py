@@ -9,7 +9,7 @@ from textual.containers import Horizontal, Vertical, Container
 from textual.screen import Screen
 
 
-TempNewChar = {"char_class":"",}
+TempNewChar = reactive("Hill Dwarf")
 
 
 MAIN_TITLE = """
@@ -51,46 +51,62 @@ class StartScreen(Widget):
         yield Container(startScreenButton(), classes="containerBorder")
 
 class AbilityScores(Screen):
-    TITLE = "Choose Ability Score"
+    
 
-    data = [
-        ("Score","Cost"),
-        ("8","0"),
-        ("9","1"),
-        ("10","2"),
-        ("11","3"),
-        ("12","4"),
-        ("13","5"),
-        ("14","7"),
-        ("15","9")
-    ]
 
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
         yield Markdown(game.AbilityPointMark(), classes="twentyPercentHeight")
         yield Horizontal(
-            Container(newCharacterStats(), classes="fiftyPercent_AbScoreScreen"),
             Container(Markdown(game.AbScoreTable(),classes="AbScoreData"), classes="AbScoreData"),
+            Container(newCharacterStats(), classes="fiftyPercent_AbScoreScreen"),
             classes="AbScoreHorizHeight"
         )
+        
+
+    def on_mount(self):
+        app.title = "Choose Ability Score"
 
 
 class newCharacterStats(Widget):
-
+    
+    
+    
     def compose(self) -> ComposeResult:
-        yield Label("Strength")
-        yield Input(placeholder=str(game.MountainDwarf().strength), id="strength")
-        yield Label("Dexterity")
-        yield Input(placeholder="0", id="dexterity")
-        yield Label("Constitution")
-        yield Input(placeholder="0", id="constitution")
-        yield Label("Intelligence")
-        yield Input(placeholder="0", id="intelligence")
-        yield Label("Wisdom")
-        yield Input(placeholder="0", id="wisdom")
-        yield Label("Charisma")
-        yield Input(placeholder="0", id="charisma")
+        choice = game.ClassGetr(TempNewChar)
+        yield Label("Attribute", classes="bold")
+        yield Label("Points", classes="bold")
+        yield Label("Cost", classes="bold")
+        yield Label("Strength", classes="attributeLabel")
+        yield Input(placeholder="0 + " + str(choice.strength), id="strength")
+        yield Input(placeholder="0", name="strength_cost", id="strength_cost")
+        yield Label("Dexterity", classes="attributeLabel")
+        yield Input(placeholder=str(choice.dexterity), id="dexterity")
+        yield Input(placeholder="0")
+        yield Label("Constitution", classes="attributeLabel")
+        yield Input(placeholder=str(choice.constitution), id="constitution")
+        yield Input(placeholder="0")
+        yield Label("Intelligence", classes="attributeLabel")
+        yield Input(placeholder=str(choice.intelligence), id="intelligence")
+        yield Input(placeholder="0")
+        yield Label("Wisdom", classes="attributeLabel")
+        yield Input(placeholder=str(choice.wisdom), id="wisdom")
+        yield Input(placeholder="0")
+        yield Label("Charisma", classes="attributeLabel")
+        yield Input(placeholder=str(choice.charisma), id="charisma")
+        yield Input(placeholder="0")
+        yield Button("Submit Ability Scores", classes="abilityScreenBtn")
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        att_name = event.input.id
+        att_value = event.input.value
+        
+        if att_name == "strength":
+            cost_val = self.query_one("#strength_cost")
+            cost_val.value = att_value
+    
+    
 
 class QuitScreen(Screen):
     
@@ -134,6 +150,7 @@ class ChooseRace(Screen):
     hum_sub_info = {"Calishite":game.Calishite(), "Chondathan": game.Chondathan(), "Damaran":game.Damaran(), "Illuskan":game.Illuskan(), "Mulan":game.Mulan(), "Rashemi":game.Rashemi(),
                     "Shou":game.Shou(), "Tethyrian":game.Tethyrian(), "Turami":game.Turami()
                     }
+    global TempNewChar
 
     def compose(self) -> ComposeResult:
         yield Footer()
@@ -200,11 +217,13 @@ class ChooseRace(Screen):
         if counter != 1:
             app.push_screen(ModalScreen_TooMany())
         else:
-            TempNewChar["char_class"] = char_class
+            
+            global TempNewChar
+            TempNewChar = char_class
             text_file = open("sample.txt", "wt")
             text_file.write(char_class)
             text_file.write("\n")
-            text_file.write(str(TempNewChar["char_class"]))
+            text_file.write(str(TempNewChar))
             text_file.close()
             app.push_screen(AbilityScores())
 
@@ -221,6 +240,7 @@ class MainApp(App):
     ]
 
     TITLE = "Adventure Game"
+    
 
     def compose(self) -> ComposeResult:
         self.styles.align = ("center","middle")

@@ -19,7 +19,7 @@ newCharacterStats {
     /* width: 50; */
     /* height: 70vh; */
     layout: grid;
-    grid-size: 2 6;
+    grid-size: 3 8;
     /* grid-columns: 1fr 2fr; */
     border: round;
 
@@ -38,10 +38,31 @@ newCharacterStats {
 
 .fiftyPercent_AbScoreScreen {
     width: 50%;
+    
+}
+
+.bold {
+    
+    text-style: bold italic;
+    text-align: center;
+    color: $text;
+    background: $primary;
+    width: 1fr;
+    /* padding: 1; */
+    border: round;
+    height: auto;
+
+}
+
+.attributeLabel {
+    width: 1fr;
+    text-align: center;
+    padding: 1;
 }
 
 .AbScoreHorizHeight {
     height: 65%;
+    
 }
 
 .twentyPercentHeight {
@@ -60,6 +81,16 @@ newCharacterStats {
     content-align-horizontal: center;
 
 }
+
+.abilityScreenBtn {
+    border: round;
+    align: center middle;
+    content-align-horizontal: center;
+    column-span: 2;
+
+}
+
+
 
 #startScreenMenu {
     align: center middle;
