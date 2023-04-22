@@ -71,7 +71,14 @@ class AbilityScores(Screen):
 
 class newCharacterStats(Widget):
     
-    
+    kv_attributes = {
+        "strength":"strength_cost",
+        "dexterity":"dexterity_cost",
+        "constitution":"constitution_cost",
+        "intelligence":"intelligence_cost",
+        "wisdom":"wisdom_cost",
+        "charisma":"charisma_cost",
+    }
     
     def compose(self) -> ComposeResult:
         choice = game.ClassGetr(TempNewChar)
@@ -83,26 +90,26 @@ class newCharacterStats(Widget):
         yield Input(placeholder="0", name="strength_cost", id="strength_cost")
         yield Label("Dexterity", classes="attributeLabel")
         yield Input(placeholder=str(choice.dexterity), id="dexterity")
-        yield Input(placeholder="0")
+        yield Input(placeholder="0", id="dexterity_cost")
         yield Label("Constitution", classes="attributeLabel")
         yield Input(placeholder=str(choice.constitution), id="constitution")
-        yield Input(placeholder="0")
+        yield Input(placeholder="0", id="constitution_cost")
         yield Label("Intelligence", classes="attributeLabel")
         yield Input(placeholder=str(choice.intelligence), id="intelligence")
-        yield Input(placeholder="0")
+        yield Input(placeholder="0", id="intelligence_cost")
         yield Label("Wisdom", classes="attributeLabel")
         yield Input(placeholder=str(choice.wisdom), id="wisdom")
-        yield Input(placeholder="0")
+        yield Input(placeholder="0", id="wisdom_cost")
         yield Label("Charisma", classes="attributeLabel")
         yield Input(placeholder=str(choice.charisma), id="charisma")
-        yield Input(placeholder="0")
+        yield Input(placeholder="0", id="charisma_cost")
         yield Button("Submit Ability Scores", classes="abilityScreenBtn")
 
     def on_input_changed(self, event: Input.Changed) -> None:
         att_name = event.input.id
         att_value = event.input.value
         
-        if att_name == "strength":
+        if att_name in kv_atrributes():
             cost_val = self.query_one("#strength_cost")
             cost_val.value = att_value
     
