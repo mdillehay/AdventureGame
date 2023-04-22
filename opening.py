@@ -109,7 +109,7 @@ class newCharacterStats(Widget):
         att_name = event.input.id
         att_value = event.input.value
         
-        if att_name in kv_atrributes():
+        if att_name in self.kv_attributes:
             cost_val = self.query_one("#strength_cost")
             cost_val.value = att_value
     
