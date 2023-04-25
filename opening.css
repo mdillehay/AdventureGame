@@ -26,6 +26,34 @@ newCharacterStats {
 
 }
 
+namePicker {
+    border: round;
+    width: 70w;
+}
+
+
+.namePickerMark {
+
+    width: 50%;
+    align: center middle;
+    
+
+}
+
+.namePickerCenter {
+    width: 50%;
+    align: center middle;
+}
+
+.height80 {
+    height: 80%;
+}
+
+.height20 {
+    height: 20%;
+    align: center middle;
+}
+
 .AbScoreData {
     align: center middle;
     width: 50w;

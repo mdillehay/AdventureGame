@@ -166,6 +166,18 @@ The racial bonuses for a {{classChoice}} are reflected below.
 
     """
     return content
+
+def ChooseNameMark():
+    content = """\
+# Choose Your Name
+
+Choose from a pre-selected list of names on the left or create your own name on the right.
+
+    """
+    return content
+
+
+
     
 def AbScoreTable():
     content = """\

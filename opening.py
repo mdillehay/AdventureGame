@@ -1,12 +1,17 @@
+from __future__ import annotations
 from textual.app import App, ComposeResult, RenderResult
 from textual.events import Key
 from textual.widget import Widget
-from textual.widgets import Button, Header, DataTable, Label, Input, Static, Footer, TabbedContent, TabPane, RadioButton, RadioSet, Markdown
+from textual.widgets import Button, Header, DataTable, Label, Input, Static, Footer, TabbedContent, TabPane, RadioButton, RadioSet, Markdown, OptionList
 from textual.reactive import reactive
 import initial_game as game
 import time
+import names
 from textual.containers import Horizontal, Vertical, Container
 from textual.screen import Screen
+from rich.table import Table
+from textual.widgets.option_list import Option, Separator
+
 
 
 TempNewChar = reactive("Hill Dwarf")
@@ -51,9 +56,6 @@ class StartScreen(Widget):
         yield Container(startScreenButton(), classes="containerBorder")
 
 class AbilityScores(Screen):
-    
-
-
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
@@ -69,16 +71,64 @@ class AbilityScores(Screen):
         app.title = "Choose Ability Score"
 
 
+class namePicker(Widget):
+    character_classes = {
+        "Hill Dwarf": names.dwarf_names,
+        "Mountain Dwarf":names.dwarf_names,
+    }
+
+    
+
+    def compose(self) -> ComposeResult:
+        names = self.character_classes.get(TempNewChar)
+        length = len(names)
+        yield OptionList(*[names[i] for i in range(length)], classes="height80")
+        yield Button("Select Name")
+
+class namePickerScreen(Screen):
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
+        yield Container(Markdown(game.ChooseNameMark(), classes="namePickerMark"), classes="height20")
+        yield Horizontal(
+            Container(namePicker(), classes="namePickerCenter"),
+            Container(namePicker(), classes="namePickerCenter")
+        )
+
+    def on_mount(self):
+        app.title = "Choose Your Name"
+
 class newCharacterStats(Widget):
     
     kv_attributes = {
-        "strength":"strength_cost",
-        "dexterity":"dexterity_cost",
-        "constitution":"constitution_cost",
-        "intelligence":"intelligence_cost",
-        "wisdom":"wisdom_cost",
-        "charisma":"charisma_cost",
+        "strength":"#strength_cost",
+        "dexterity":"#dexterity_cost",
+        "constitution":"#constitution_cost",
+        "intelligence":"#intelligence_cost",
+        "wisdom":"#wisdom_cost",
+        "charisma":"#charisma_cost",
     }
+
+    kv_costs = {
+        "8":"0",
+        "9":"1",
+        "10":"2",
+        "11":"3",
+        "12":"4",
+        "13":"5",
+        "14":"7",
+        "15":"9",
+
+    }
+
+    list_cost_labels = [
+        "strength_cost",
+        "dexterity_cost",
+        "constitution_cost",
+        "intelligence_cost",
+        "wisdom_cost",
+        "charisma_cost"
+    ]
     
     def compose(self) -> ComposeResult:
         choice = game.ClassGetr(TempNewChar)
@@ -87,7 +137,7 @@ class newCharacterStats(Widget):
         yield Label("Cost", classes="bold")
         yield Label("Strength", classes="attributeLabel")
         yield Input(placeholder="0 + " + str(choice.strength), id="strength")
-        yield Input(placeholder="0", name="strength_cost", id="strength_cost")
+        yield Input(placeholder="0", id="strength_cost")
         yield Label("Dexterity", classes="attributeLabel")
         yield Input(placeholder=str(choice.dexterity), id="dexterity")
         yield Input(placeholder="0", id="dexterity_cost")
@@ -110,10 +160,44 @@ class newCharacterStats(Widget):
         att_value = event.input.value
         
         if att_name in self.kv_attributes:
-            cost_val = self.query_one("#strength_cost")
-            cost_val.value = att_value
+            # cost_val = self.query_one("#strength_cost")
+            # cost_val.value = att_value
+            if att_value in self.kv_costs:
+                var = self.kv_attributes.get(att_name)
+                cost_val = self.query_one(var)
+                cost_val.value = self.kv_costs.get(att_value)
+            else:
+                pass  #Need to implement the Error if score is outside of acceptable range
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        total = 0
+        for item in self.query("Input"):
+            if item.id in self.list_cost_labels:
+                total = total + int(item.value)
+
+        if total > 27:
+            app.push_screen(ModalScreen_27())
+        else:
+            app.push_screen(Work_Continues())
+
+class Work_Continues(Screen):
     
-    
+    def compose(self) -> ComposeResult:
+        yield Static("The Work Continues ... more to follow", classes="containerBorder")
+
+class ModalScreen_27(Screen):
+    statement = """\
+# Cost total cannot exceed 27      
+    """
+
+    def compose(self) -> ComposeResult:
+        yield Container(Markdown(self.statement), classes="containerBorder")
+        yield Container(Button("Go Back"), classes="containerBorder")
+
+    def on_button_pressed(self, event: Button.Pressed):
+        app.pop_screen()    
+
+
 
 class QuitScreen(Screen):
     
@@ -162,7 +246,6 @@ class ChooseRace(Screen):
     def compose(self) -> ComposeResult:
         yield Footer()
         self.styles.align_horizontal = ("center")
-        # self.styles.height = ("70vh")
         
         with TabbedContent():
             with TabPane('Dwarf'):
@@ -232,13 +315,15 @@ class ChooseRace(Screen):
             text_file.write("\n")
             text_file.write(str(TempNewChar))
             text_file.close()
-            app.push_screen(AbilityScores())
+            # app.push_screen(AbilityScores())
+            app.push_screen(namePickerScreen())
 
 class MainApp(App):
     CSS_PATH = "opening.css"
     # CSS_PATH = "multiple.css"
     SCREENS = {"QuitScreen":QuitScreen(),
                "ChooseRace":ChooseRace(),
+               "AbilityScores":AbilityScores(),
                }
     BINDINGS = [("m", "push_screen('MenuScreen')", "Menu"),
                 ("q", "push_screen('QuitScreen')", "Quit")
