@@ -19,7 +19,7 @@ newCharacterStats {
     /* width: 50; */
     /* height: 70vh; */
     layout: grid;
-    grid-size: 3 8;
+    grid-size: 4 8;
     /* grid-columns: 1fr 2fr; */
     border: round;
 
@@ -36,8 +36,13 @@ namePicker {
 
     width: 50%;
     align: center middle;
+    border: round;
     
 
+}
+
+.namePickerScreenHeight {
+    height: 3fr;
 }
 
 .namePickerCenter {
@@ -46,17 +51,63 @@ namePicker {
 }
 
 .height80 {
-    height: 80%;
+    height: 80h;
 }
 
 .height20 {
-    height: 20%;
+    height: 1fr;
     align: center middle;
 }
 
+/* ---------------Name Creator CSS--------------- */
+
+nameCreator {
+    border: round;
+    width: 70w;
+    height: 4fr;
+}
+
+
+.gridTest {
+    layout: grid;
+    grid-size: 2 2;
+    border: round;
+}
+
+.nameCreatorMark {
+    width: 70w;
+    align: center middle;
+    border: round;
+    content_align_horizontal: center;
+
+}
+
+.nameCreatorButton {
+    align: center middle;
+    /* border: round; */
+
+}
+
+.nameCreatorInput {
+    align: center middle;
+    content-align-horizontal: center;
+}
+
+.nameCreatorCenter {
+    align: center middle;
+    height: 40h;
+    border: round;
+}
+
+
 .AbScoreData {
     align: center middle;
-    width: 50w;
+    width: 30w;
+}
+
+.AbScoreButton {
+    align: center middle;
+    width: 20w;
 }
 
 .DTCenter {
@@ -145,12 +196,38 @@ namePicker {
     layers: below above;
 } */
 
-/* ChooseRace {
+ChooseRaceScreen {
     align: center top;
-    height: 100%;
 
 
-} */
+}
+
+.choose_race_screen_80 {
+    align: center top;
+    width: 79w;
+}
+
+.choose_race_screen_20 {
+    align: center middle;
+    width: 19w;
+    border: round $primary;
+}
+
+.choose_race_screen_hz {
+    align: center middle;
+}
+
+.ta_class {
+    text-align: center;
+}
+
+.class_button {
+    align-horizontal: center;
+}
+
+.border {
+    border: round;
+}
 
 /* Markdown {
     height: 100%;

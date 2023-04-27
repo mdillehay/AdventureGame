@@ -11,10 +11,15 @@ from textual.containers import Horizontal, Vertical, Container
 from textual.screen import Screen
 from rich.table import Table
 from textual.widgets.option_list import Option, Separator
+import ab_score_summary as abss
+import example as classList
+import character_races
 
 
 
 TempNewChar = reactive("Hill Dwarf")
+TempNewName = ""
+
 
 
 MAIN_TITLE = """
@@ -59,9 +64,10 @@ class AbilityScores(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Markdown(game.AbilityPointMark(), classes="twentyPercentHeight")
+        yield Markdown(game.AbilityPointMark(TempNewChar), classes="twentyPercentHeight")
         yield Horizontal(
-            Container(Markdown(game.AbScoreTable(),classes="AbScoreData"), classes="AbScoreData"),
+            Container(Markdown(game.AbScoreTable()), classes="AbScoreData"),
+            Container(Button("More Info", id="abs_more_info"), classes="AbScoreButton"),
             Container(newCharacterStats(), classes="fiftyPercent_AbScoreScreen"),
             classes="AbScoreHorizHeight"
         )
@@ -70,6 +76,10 @@ class AbilityScores(Screen):
     def on_mount(self):
         app.title = "Choose Ability Score"
 
+    def on_button_pressed(self, event: Button.Pressed):
+        if event.button.id == "abs_more_info":
+            app.push_screen(ModalScreen_AbScoreSummary())
+
 
 class namePicker(Widget):
     character_classes = {
@@ -77,13 +87,29 @@ class namePicker(Widget):
         "Mountain Dwarf":names.dwarf_names,
     }
 
-    
-
     def compose(self) -> ComposeResult:
         names = self.character_classes.get(TempNewChar)
         length = len(names)
-        yield OptionList(*[names[i] for i in range(length)], classes="height80")
-        yield Button("Select Name")
+        yield OptionList(*[names[i] for i in range(length)], classes="height80", id="char_names")
+        yield Container(Button("Select Name", id="picker_button"), classes="nameCreatorButton")
+
+
+class nameCreator(Widget):
+
+    def compose(self) -> ComposeResult:
+        val = TempNewChar.upper()
+        yield Container(Markdown((f"""## Create Your Name \nYou can create your own name for your {val} below"""), classes="nameCreatorMark"), classes="height20")
+        yield Vertical(
+            Container(Input(placeholder="Your Name Here", classes="nameCreatorInput"),classes="nameCreatorButton"),
+            Container(Button("Submit Name", classes="nameCreatorButton", id="creator_button"),classes="nameCreatorButton"),
+            classes="nameCreatorCenter"
+        )
+
+    def on_button_pressed(self, event: Button.Pressed):
+        global TempNewName
+        TempNewName = self.query_one("Input").value
+        app.push_screen(AbilityScores())
+
 
 class namePickerScreen(Screen):
     def compose(self) -> ComposeResult:
@@ -92,11 +118,24 @@ class namePickerScreen(Screen):
         yield Container(Markdown(game.ChooseNameMark(), classes="namePickerMark"), classes="height20")
         yield Horizontal(
             Container(namePicker(), classes="namePickerCenter"),
-            Container(namePicker(), classes="namePickerCenter")
+            Container(nameCreator(), classes="namePickerCenter"),
+            classes="namePickerScreenHeight"
         )
 
     def on_mount(self):
         app.title = "Choose Your Name"
+
+    option_choice = ""
+    def on_option_list_option_highlighted(self, event: OptionList.OptionSelected):
+        self.option_choice = event.option.prompt
+        
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        global TempNewName
+        if event.button.id == "picker_button":
+            TempNewName = self.option_choice
+            app.switch_screen(AbilityScores())
+
 
 class newCharacterStats(Widget):
     
@@ -133,26 +172,34 @@ class newCharacterStats(Widget):
     def compose(self) -> ComposeResult:
         choice = game.ClassGetr(TempNewChar)
         yield Label("Attribute", classes="bold")
-        yield Label("Points", classes="bold")
+        yield Label("Score", classes="bold")
+        yield Label("Race Bonus", classes="bold")
         yield Label("Cost", classes="bold")
+
         yield Label("Strength", classes="attributeLabel")
-        yield Input(placeholder="0 + " + str(choice.strength), id="strength")
-        yield Input(placeholder="0", id="strength_cost")
+        yield Input(placeholder="0", id="strength")
+        yield Input(placeholder=str(choice.strength), disabled=True)
+        yield Input(placeholder="0", id="strength_cost", disabled=True)
         yield Label("Dexterity", classes="attributeLabel")
-        yield Input(placeholder=str(choice.dexterity), id="dexterity")
-        yield Input(placeholder="0", id="dexterity_cost")
+        yield Input(placeholder="0", id="dexterity")
+        yield Input(placeholder=str(choice.dexterity), disabled=True)
+        yield Input(placeholder="0", id="dexterity_cost", disabled=True)
         yield Label("Constitution", classes="attributeLabel")
-        yield Input(placeholder=str(choice.constitution), id="constitution")
-        yield Input(placeholder="0", id="constitution_cost")
+        yield Input(placeholder="0", id="constitution")
+        yield Input(placeholder=str(choice.constitution), disabled=True)
+        yield Input(placeholder="0", id="constitution_cost", disabled=True)
         yield Label("Intelligence", classes="attributeLabel")
-        yield Input(placeholder=str(choice.intelligence), id="intelligence")
-        yield Input(placeholder="0", id="intelligence_cost")
+        yield Input(placeholder="0", id="intelligence")
+        yield Input(placeholder=str(choice.intelligence), disabled=True)
+        yield Input(placeholder="0", id="intelligence_cost", disabled=True)
         yield Label("Wisdom", classes="attributeLabel")
-        yield Input(placeholder=str(choice.wisdom), id="wisdom")
-        yield Input(placeholder="0", id="wisdom_cost")
+        yield Input(placeholder="0", id="wisdom")
+        yield Input(placeholder=str(choice.wisdom), disabled=True)
+        yield Input(placeholder="0", id="wisdom_cost", disabled=True)
         yield Label("Charisma", classes="attributeLabel")
-        yield Input(placeholder=str(choice.charisma), id="charisma")
-        yield Input(placeholder="0", id="charisma_cost")
+        yield Input(placeholder="0", id="charisma")
+        yield Input(placeholder=str(choice.charisma), disabled=True)
+        yield Input(placeholder="0", id="charisma_cost", disabled=True)
         yield Button("Submit Ability Scores", classes="abilityScreenBtn")
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -167,11 +214,16 @@ class newCharacterStats(Widget):
                 cost_val = self.query_one(var)
                 cost_val.value = self.kv_costs.get(att_value)
             else:
-                pass  #Need to implement the Error if score is outside of acceptable range
+                pass
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         total = 0
         for item in self.query("Input"):
+            if item.id in list(self.kv_attributes.keys()) and 8>int(item.value)>15:
+                app.push_screen(ModalScreen_8_15())
+############################################################################################
+#THIS    WHOLE AREA IS CURRENTLY BROKEN NEED TO FIGURE OUT A BETTER DATA VALIDATION METHOD
+############################################################################################
             if item.id in self.list_cost_labels:
                 total = total + int(item.value)
 
@@ -197,6 +249,17 @@ class ModalScreen_27(Screen):
     def on_button_pressed(self, event: Button.Pressed):
         app.pop_screen()    
 
+class ModalScreen_8_15(Screen):
+    statement = """\
+# Score must be between 8 and 15      
+    """
+
+    def compose(self) -> ComposeResult:
+        yield Container(Markdown(self.statement), classes="containerBorder")
+        yield Container(Button("Go Back"), classes="containerBorder")
+
+    def on_button_pressed(self, event: Button.Pressed):
+        app.pop_screen()
 
 
 class QuitScreen(Screen):
@@ -230,7 +293,75 @@ class ModalScreen_TooMany(Screen):
     def on_button_pressed(self, event: Button.Pressed):
         app.pop_screen()
 
-class ChooseRace(Screen):
+class ChooseClass(Widget):
+    def compose(self) -> ComposeResult:
+        self.styles.width = "70w"
+        self.styles.align_horizontal = "center"
+        with TabbedContent():
+            for item in classList.data:
+                c_class = item[0]
+                desc = item[1]
+                hit_die = item[2]
+                prim_ability = item[3]
+                sav_throw_prof = item[4]
+                ar_wpn_prof = item[5]
+
+                md = f"""\
+# {c_class}
+
+## Description:\n {desc}
+## Hit Die:\n {hit_die}
+## Primary Ability:\n {prim_ability}
+## Saving Throw Proficiencies:\n {sav_throw_prof}
+## Armor and Weapon Proficiencies:\n {ar_wpn_prof}
+                    
+                    """    
+                with TabPane(c_class, id=c_class):
+                    yield Markdown(md, classes="ta_class")
+        yield Container(Button("Submit", ), classes="class_button")
+######################################################################
+#   Need to add RadioButtons to each TabPane in order to grab a value
+#   to store for Chosen Character Class
+######################################################################
+
+    def on_button_pressed(self, event: Button.Pressed):
+        
+        
+        text_file = open("sample.txt", "wt")
+        text_file.write(str(final_choice_id))
+        text_file.write("\n")
+        # text_file.write(str(TabbedContent.id))
+        text_file.close()
+
+
+
+class ChooseClassScreen(Screen):
+    def compose(self) -> ComposeResult:
+        self.styles.align_horizontal = "center"
+        yield ChooseClass()
+
+class RaceRadioButton(Widget):
+    def compose(self) -> ComposeResult:
+        self.styles.align = ("center", "middle")
+        with RadioSet():
+            for item in character_races.character_races:
+                yield RadioButton(item, id=item)
+
+        yield Button("Submit", classes="border")
+
+    
+    def on_button_pressed(self, event: Button.Pressed):
+        race = self.query_one(RadioSet).pressed_button
+        global TempNewChar
+        TempNewChar = race.id
+        text_file = open("sample.txt", "wt")
+        text_file.write((race.id))
+        text_file.write("\n")
+        # text_file.write(str(TabbedContent.id))
+        text_file.close()
+        app.push_screen(namePickerScreen())
+
+class ChooseRace(Widget):
     BINDINGS = [("escape", "app.pop_screen", "Go Back")]
 
     dwarf_subraces = ["Hill Dwarf", "Mountain Dwarf"]
@@ -244,89 +375,100 @@ class ChooseRace(Screen):
     global TempNewChar
 
     def compose(self) -> ComposeResult:
-        yield Footer()
         self.styles.align_horizontal = ("center")
         
         with TabbedContent():
             with TabPane('Dwarf'):
                 yield Markdown(game.DwarfMark())
-                for sub in self.dwarf_subraces:
-                    yield RadioButton(sub) 
             
             with TabPane('Elf'):
                 yield Markdown(game.ElfMark())
-                for sub in self.elf_subraces:
-                    yield RadioButton(sub)
 
             with TabPane("Halfling"):
                 yield Markdown(game.HalflingMark())
-                for sub in self.halfling_subraces:
-                    yield RadioButton(sub)
 
             with TabPane("Human"):
                 yield Markdown(game.HumanMark())
                 with TabbedContent():
                     for sub in self.human_subraces:
-                        yield TabPane(sub, Markdown(self.hum_sub_info[sub]),RadioButton(sub))
+                        yield TabPane(sub, Markdown(self.hum_sub_info[sub]))
                         
 
             with TabPane("Dragonborn"):
                 yield Markdown(game.DragonbornMark())
-                yield RadioButton("Dragonborn")
 
             with TabPane("Gnome"):
                 yield Markdown(game.GnomeMark())
-                for sub in self.gnome_subraces:
-                    yield RadioButton(sub)
 
             with TabPane("Half-Elf"):
                 yield Markdown(game.HalfelfMark())
-                yield RadioButton("Half-Elf")
 
             with TabPane("Half-Orc"):
                 yield Markdown(game.HalforcMark())
-                yield RadioButton("Half-Orc")
 
             with TabPane("Tiefling"):
                 yield Markdown(game.TieflingMark())
-                yield RadioButton("Tiefling")
 
-        yield Container(Button("Create Character", classes="containerBorder"), classes="_1fr")
+
+class AbScoreSummary(Widget):
+    
+
+    def compose(self) -> ComposeResult:
+        self.styles.align_horizontal = ("center")
+        with TabbedContent():
+            with TabPane("Strength"):
+                yield Markdown(abss.strength)
+            with TabPane("Dexterity"):
+                yield Markdown(abss.dexterity)
+            with TabPane("Constitution"):
+                yield Markdown(abss.constituion)
+            with TabPane("Intelligence"):
+                yield Markdown(abss.intelligence)
+            with TabPane("Wisdom"):
+                yield Markdown(abss.wisdom)
+            with TabPane("Charisma"):
+                yield Markdown(abss.charisma)
+
+class ModalScreen_AbScoreSummary(Screen):
+
+    def compose(self) -> ComposeResult:
+        yield Container(AbScoreSummary(), classes="containerBorder")
+        yield Container(Button("Go Back"), classes="containerBorder")
 
     def on_button_pressed(self, event: Button.Pressed):
-        radio_count = self.query("RadioButton")
-        counter = 0
-        char_class = ""
-        for Radio_Button in radio_count:
-            if Radio_Button.value == True:
-                counter = counter + 1
-                char_class = str(Radio_Button.label)
-            else:
-                pass
-        
-        if counter != 1:
-            app.push_screen(ModalScreen_TooMany())
-        else:
-            
-            global TempNewChar
-            TempNewChar = char_class
-            text_file = open("sample.txt", "wt")
-            text_file.write(char_class)
-            text_file.write("\n")
-            text_file.write(str(TempNewChar))
-            text_file.close()
-            # app.push_screen(AbilityScores())
-            app.push_screen(namePickerScreen())
+        app.pop_screen()
+
+class ChooseRaceScreen(Screen):
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
+        yield Horizontal(
+            Container(ChooseRace(), classes="choose_race_screen_80"),
+            Container(RaceRadioButton(), classes="choose_race_screen_20"),
+            classes="choose_race_screen_hz"
+        )
+    
+    def on_mount(self) -> None:
+        app.title = "Choose Your Race"
+
+
+class RaceRadio(Screen):
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
+        yield Container(Static(game.ascii_dice()))
 
 class MainApp(App):
     CSS_PATH = "opening.css"
     # CSS_PATH = "multiple.css"
     SCREENS = {"QuitScreen":QuitScreen(),
-               "ChooseRace":ChooseRace(),
+               "ChooseRace":ChooseRaceScreen(),
                "AbilityScores":AbilityScores(),
+               "TestScreen":RaceRadio(),
                }
     BINDINGS = [("m", "push_screen('MenuScreen')", "Menu"),
-                ("q", "push_screen('QuitScreen')", "Quit")
+                ("q", "push_screen('QuitScreen')", "Quit"),
+                ("t", "push_screen('TestScreen')", "Test Screen")
                 # ("f", "toggle_class('sidebar', '-active')", "Show Sidebar"),
                 # ("t", "push_screen('cover')", "Title")
     ]

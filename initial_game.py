@@ -154,15 +154,15 @@ class Wizard(Character):
         return self.gender
 
 
-def AbilityPointMark():
-    classChoice = "EXAMPLE"
+def AbilityPointMark(class_choice: str):
+    classChoice = class_choice
 
-    content = """\
+    content = f"""\
 # Choose Your Ability Points
 
 You have 27 points to spend on your ability scores. The cost of each score is shown on the Ability Score Point Cost table (below). Using this method, 15 is
 the highest score you can have before applying racial increases. You can't have a score lower than 8.\n
-The racial bonuses for a {{classChoice}} are reflected below.
+The racial bonuses for a {classChoice} are reflected below.
 
     """
     return content
@@ -196,6 +196,22 @@ def AbScoreTable():
         """
     return content
 
+
+def ascii_dice():
+    content = """\
+          .----------.     ________
+         /          /|    /\       \\
+        /     o    /o|   /o \   o   \\
+       /__________/  |  /   o\_______\\
+       | o        |  | /o    /o      /
+       |          |o | \  o /   o   /
+       |     o    |  /  \  /      o/
+       |          | /    \/_______/
+       |_________o|/
+        
+        
+        """
+    return content
 
 
 def DwarfMark():
