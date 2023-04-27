@@ -13,12 +13,13 @@ from rich.table import Table
 from textual.widgets.option_list import Option, Separator
 import ab_score_summary as abss
 import example as classList
-import character_races
+import character_dev_lists
 
 
 
 TempNewChar = reactive("Hill Dwarf")
 TempNewName = ""
+TempNewClass = ""
 
 
 
@@ -43,7 +44,7 @@ class startScreenButton(Widget):
             Button("Start Game", classes="startScreenBtn"),
             Button("Continue Game", classes="startScreenBtn"),
             Button("Create New Character", classes="startScreenBtn", id="CreateCharacter"),
-            Button("Exit", classes="startScreenBtn"), id="startScreenMenu"
+            Button("Exit", classes="startScreenBtn", id="exit"), id="startScreenMenu"
         )
 
     # def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -59,6 +60,10 @@ class StartScreen(Widget):
         self.styles.align = ("center","middle")
         yield Container(Static(MAIN_TITLE, id="words"), classes="containerBorder")
         yield Container(startScreenButton(), classes="containerBorder")
+
+class StartScreen_SC(Screen):
+    def compose(self) -> ComposeResult:
+        yield StartScreen()
 
 class AbilityScores(Screen):
     def compose(self) -> ComposeResult:
@@ -230,7 +235,7 @@ class newCharacterStats(Widget):
         if total > 27:
             app.push_screen(ModalScreen_27())
         else:
-            app.push_screen(Work_Continues())
+            app.push_screen(ChooseClassScreen())
 
 class Work_Continues(Screen):
     
@@ -309,20 +314,15 @@ class ChooseClass(Widget):
                 md = f"""\
 # {c_class}
 
-## Description:\n {desc}
-## Hit Die:\n {hit_die}
-## Primary Ability:\n {prim_ability}
-## Saving Throw Proficiencies:\n {sav_throw_prof}
-## Armor and Weapon Proficiencies:\n {ar_wpn_prof}
+### Description: \n  {desc}
+### Hit Die: \n  {hit_die}
+### Primary Ability: \n {prim_ability}
+### Saving Throw Proficiencies: \n {sav_throw_prof}
+### Armor and Weapon Proficiencies: \n {ar_wpn_prof}
                     
                     """    
                 with TabPane(c_class, id=c_class):
                     yield Markdown(md, classes="ta_class")
-        yield Container(Button("Submit", ), classes="class_button")
-######################################################################
-#   Need to add RadioButtons to each TabPane in order to grab a value
-#   to store for Chosen Character Class
-######################################################################
 
     def on_button_pressed(self, event: Button.Pressed):
         
@@ -336,15 +336,41 @@ class ChooseClass(Widget):
 
 
 class ChooseClassScreen(Screen):
+    
     def compose(self) -> ComposeResult:
         self.styles.align_horizontal = "center"
-        yield ChooseClass()
+        yield Header()
+        yield Footer()
+        yield Horizontal(
+            Container(ChooseClass(), classes="choose_race_screen_80"),
+            Container(ClassRadioButton(), classes="choose_race_screen_20"),
+            classes="choose_race_screen_hz"
+        )
+
+    def on_mount(self) -> None:
+        app.title = "Choose Your Class"
+
+
+class ClassRadioButton(Widget):
+    def compose(self) -> ComposeResult:
+        self.styles.align = ("center", "middle")
+        with RadioSet():
+            for item in character_dev_lists.character_classes:
+                yield RadioButton(item, id=item)
+
+        yield Button("Submit", classes="border")
+    
+    def on_button_pressed(self, event: Button.Pressed):
+        c_class = self.query_one(RadioSet).pressed_button
+        global TempNewClass
+        TempNewClass = c_class.id
+
 
 class RaceRadioButton(Widget):
     def compose(self) -> ComposeResult:
         self.styles.align = ("center", "middle")
         with RadioSet():
-            for item in character_races.character_races:
+            for item in character_dev_lists.character_races:
                 yield RadioButton(item, id=item)
 
         yield Button("Submit", classes="border")
@@ -464,7 +490,8 @@ class MainApp(App):
     SCREENS = {"QuitScreen":QuitScreen(),
                "ChooseRace":ChooseRaceScreen(),
                "AbilityScores":AbilityScores(),
-               "TestScreen":RaceRadio(),
+               "TestScreen":ChooseClassScreen(),
+               "MenuScreen":StartScreen_SC(),
                }
     BINDINGS = [("m", "push_screen('MenuScreen')", "Menu"),
                 ("q", "push_screen('QuitScreen')", "Quit"),
@@ -481,10 +508,14 @@ class MainApp(App):
         yield Header(show_clock=True)
         yield StartScreen()
         yield Footer()
+        
+    
      
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "CreateCharacter":
             app.push_screen("ChooseRace")
+        elif event.button.id == "exit":
+            app.push_screen(QuitScreen())
         else:
             pass
 
