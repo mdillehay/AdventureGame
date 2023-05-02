@@ -1,3 +1,9 @@
+Screen {
+    layers: below above;
+}
+
+
+
 startScreenButton {
     
     width: 70%;
@@ -229,15 +235,61 @@ ChooseRaceScreen {
     border: round;
 }
 
-/* Markdown {
-    height: 100%;
-} */
+.hkey {
+    border: hkey;
+    height: auto;
+    align: center middle;
+}
 
-/* TabbedContent {
-    height: 100vh;
-} */
+.dice_ascii {
+    content-align-horizontal: center;
+}
 
-/* TabbedPane {
-    height: 100vh;
-} */
 
+/* ----------------Dice Sidebar CSS------------------- */
+
+Dice {
+    width: 30vw;
+    layer: below;
+    offset-x: -100;
+    dock: left;
+    border: heavy round;
+    text-style: bold;
+}
+
+Dice.-active {
+    offset-x: 0;
+    layer: above;
+    width: 30vw;
+    dock: left;
+}
+
+.dice_50 {
+    /* width: 50w; */
+    align: center middle;
+    border: round;
+    height: auto;
+}
+
+.dice_auto {
+    width: auto;
+    border: round;
+}
+
+.dice_label {
+    width: auto;
+    border: round;
+    background: $primary;
+}
+
+.dice_horiz {
+    align: center middle;
+    height: auto;
+}
+
+/* ------------------------ Green Text --------------------------- */
+
+.green {
+    color: rgb(0, 255, 0);
+    
+}

@@ -45,6 +45,8 @@ def ClassGetr(class_choice):
     character_classes = {
         "Hill Dwarf": HillDwarf(),
         "Mountain Dwarf":MountainDwarf(),
+        "High Elf":HighElf(),
+        "Wood Elf":WoodElf(),
     }
 
     class_return = character_classes[class_choice]
@@ -113,7 +115,7 @@ class Dwarf(Character):
         self.tool_prof = "" 
         self.stonecunning = True
         self.language_prim = "Common"
-        self.language_prim = "Dwarvish"
+        self.language_sec = "Dwarvish"
 
 
 class MountainDwarf(Dwarf):
@@ -129,6 +131,37 @@ class HillDwarf(Dwarf):
         super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
 
         self.setStrength(self.strength + 4)
+
+class Elf(Character):
+    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
+        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+
+        self.setConstitution(self.constitution +2)
+        self.darkvision = True
+        self.keen_senses = True
+        self.fey_ancestry = True
+        self.language_prim = "Common"
+        self.language_sec = "Elvish"
+
+class HighElf(Elf):
+    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
+        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+
+        self.setIntelligence(self.intelligence +1)
+        self.combat_training = ["longsword","shotsword","shortbow","longbow"]
+        self.cantrip_count = 1
+        self.extra_language_count = 1
+
+class WoodElf(Elf):
+    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
+        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+
+        self.setWisdom(self.wisdom + 1)
+        self.combat_training = ["longsword","shotsword","shortbow","longbow"]
+        self.fleet_feet = True
+        self.mask_of_the_wild = True
+
+
 
 class Wizard(Character):
 
@@ -199,15 +232,15 @@ def AbScoreTable():
 
 def ascii_dice():
     content = """\
-          .----------.     ________
-         /          /|    /\       \\
-        /     o    /o|   /o \   o   \\
-       /__________/  |  /   o\_______\\
-       | o        |  | /o    /o      /
-       |          |o | \  o /   o   /
-       |     o    |  /  \  /      o/
-       |          | /    \/_______/
-       |_________o|/
+    .----------.     ________
+   /          /|    /\       \\
+  /     o    /o|   /o \   o   \\
+ /__________/  |  /   o\_______\\
+ | o        |  | /o    /o      /
+ |          |o | \  o /   o   /
+ |     o    |  /  \  /      o/
+ |          | /    \/_______/
+ |_________o|/
         
         
         """
