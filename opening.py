@@ -16,7 +16,8 @@ import ab_score_summary as abss
 import example as classList
 import character_dev_lists
 from random import randint
-
+from rich_pixels import Pixels
+from rich.console import Console
 
 
 TempNewChar = reactive("Hill Dwarf")
@@ -34,6 +35,26 @@ MAIN_TITLE = """
 /_/    \_\__,_| \_/ \___|_| |_|\__|\__,_|_|  \___|  \_____|\__,_|_| |_| |_|\___|
                                                                                 
     
+    """
+
+ALTERNATE_TITLE = """
+
+ _____                                                    _____                                  
+|  __ \                                           ___    |  __ \                                 
+| |  | |_   _ _ __   __ _  ___  ___  _ __  ___   ( _ )   | |  | |_ __ __ _  __ _  ___  _ __  ___ 
+| |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|  / _ \/\ | |  | | '__/ _` |/ _` |/ _ \| '_ \/ __|
+| |__| | |_| | | | | (_| |  __/ (_) | | | \__ \ | (_>  < | |__| | | | (_| | (_| | (_) | | | \__ \\
+|_____/ \__,_|_| |_|\__, |\___|\___/|_| |_|___/  \___/\/ |_____/|_|  \__,_|\__, |\___/|_| |_|___/
+                     __/ |                                                  __/ |                
+                    |___/                                                  |___/                     
+    
+         _____ _                          _              ____        _ _     _           
+        / ____| |                        | |            |  _ \      (_) |   | |          
+       | |    | |__   __ _ _ __ __ _  ___| |_ ___ _ __  | |_) |_   _ _| | __| | ___ _ __ 
+       | |    | '_ \ / _` | '__/ _` |/ __| __/ _ \ '__| |  _ <| | | | | |/ _` |/ _ \ '__|
+       | |____| | | | (_| | | | (_| | (__| ||  __/ |    | |_) | |_| | | | (_| |  __/ |   
+        \_____|_| |_|\__,_|_|  \__,_|\___|\__\___|_|    |____/ \__,_|_|_|\__,_|\___|_|   
+
     """
 
 class startScreenButton(Widget):
@@ -60,12 +81,15 @@ class startScreenButton(Widget):
 class StartScreen(Widget):
     def compose(self) -> ComposeResult:
         self.styles.align = ("center","middle")
-        yield Container(Static(MAIN_TITLE, id="words"), classes="containerBorder")
+        yield Container(Static(ALTERNATE_TITLE, id="words"), classes="containerBorder")
         yield Container(startScreenButton(id="st_btn"), classes="containerBorder")
 
 
 class StartScreen_SC(Screen):
     def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
+        yield Dice()
         yield StartScreen()
 
 class AbilityScores(Screen):
@@ -227,7 +251,7 @@ class newCharacterStats(Widget):
         yield Input(value="0", id="intelligence_cost", disabled=True)
         yield Label("Wisdom", classes="attributeLabel")
         yield StatsInput(placeholder="0", id="wisdom")
-        yield Input(value=(str(choice.wisdom)), classes="green", disabled=True) # Need to implement this to the rest
+        yield Input(value=(str(choice.wisdom)), classes="green", disabled=True) 
         yield Input(value="0", id="wisdom_cost", disabled=True)
         yield Label("Charisma", classes="attributeLabel")
         yield StatsInput(placeholder="0", id="charisma")
@@ -428,15 +452,16 @@ class ClassRadioButton(Widget):
 class RaceRadioButton(Widget):
     def compose(self) -> ComposeResult:
         self.styles.align = ("center", "middle")
-        with RadioSet():
+        with RadioSet(id="race_radio_set"):
             for item in character_dev_lists.character_races:
                 yield RadioButton(item, id=item)
-
+        yield Label("Choose Character's Gender")
+        yield RadioSet("Male","Female","Other")
         yield Button("Submit", classes="border")
 
     
     def on_button_pressed(self, event: Button.Pressed):
-        race = self.query_one(RadioSet).pressed_button
+        race = self.query_one("#race_radio_set").pressed_button
         global TempNewChar
         TempNewChar = race.id
         text_file = open("sample.txt", "wt")
@@ -621,7 +646,11 @@ class RaceRadio(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Container(Static(game.ascii_dice()))
+        yield Container(Static(pixels))
+        yield Dice()
+
+console = Console()
+pixels = Pixels.from_image_path("bulbasaur.png")
 
 class MainApp(App):
     CSS_PATH = "opening.css"
@@ -629,7 +658,7 @@ class MainApp(App):
     SCREENS = {"QuitScreen":QuitScreen(),
                "ChooseRace":ChooseRaceScreen(),
             #    "AbilityScores":AbilityScores(),
-               "TestScreen":ChooseClassScreen(),
+               "TestScreen":RaceRadio(),
                "MenuScreen":StartScreen_SC(),
                }
     BINDINGS = [("m", "push_screen('MenuScreen')", "Menu"),
