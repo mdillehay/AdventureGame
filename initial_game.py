@@ -201,16 +201,26 @@ class Halfling(Character):
     def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
         super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
 
+        self.setDexterity(self.dexterity + 2)
+        self.lucky = True
+        self.brave = True
+        self.nimbleness = True
+        self.language_prim = "Common"
+        self.language_sec = "Halfling"
 
 class Lightfoot(Halfling):
     def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
         super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
 
+        self.setCharisma(self.charisma + 1)
+        self.naturally_stealthy = True
 
 class Stout(Halfling):
     def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
         super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
 
+        self.setConstitution(self.constitution + 1)
+        self.stout_resilience = True
 
 class Human(Character):
     def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:

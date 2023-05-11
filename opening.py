@@ -24,6 +24,8 @@ TempNewChar = reactive("Hill Dwarf")
 TempNewName = ""
 TempNewClass = ""
 
+NewChar = game.Character()
+
 
 
 MAIN_TITLE = """
@@ -119,7 +121,9 @@ class namePicker(Widget):
         "Mountain Dwarf":names.dwarf_names,
         "High Elf":names.elf_names,
         "Wood Elf":names.elf_names,
-        "Dark Elf (Drow)":names.elf_names
+        "Dark Elf (Drow)":names.elf_names,
+        "Lightfoot":names.halfling_names,
+        "Stout":names.halfling_names,
     }
 
     def compose(self) -> ComposeResult:
@@ -143,6 +147,7 @@ class nameCreator(Widget):
     def on_button_pressed(self, event: Button.Pressed):
         global TempNewName
         TempNewName = self.query_one("Input").value
+        NewChar.setName(TempNewName)
         app.push_screen(AbilityScores())
 
 
@@ -170,6 +175,7 @@ class namePickerScreen(Screen):
         global TempNewName
         if event.button.id == "picker_button":
             TempNewName = self.option_choice
+            NewChar.setName(TempNewName)
             app.switch_screen(AbilityScores())
 
 
@@ -317,6 +323,23 @@ class newCharacterStats(Widget):
         if total > 27:
             app.push_screen(ModalScreen_27())
         else:
+            atts_to_input = self.query(StatsInput)
+            for att in atts_to_input:
+                if att.id == "strength":
+                    NewChar.setStrength(att.value)
+                elif att.id == "dexterity":
+                    NewChar.setDexterity(att.value)
+                elif att.id == "constitution":
+                    NewChar.setConstitution(att.value)
+                elif att.id == "intelligence":
+                    NewChar.setIntelligence(att.value)
+                elif att.id == "wisdom":
+                    NewChar.setWisdom(att.value)
+                elif att.id == "charisma":
+                    NewChar.setCharisma(att.value)
+                else:
+                    pass
+            
             app.push_screen(ChooseClassScreen())
 
 class Work_Continues(Screen):
@@ -649,6 +672,13 @@ class RaceRadio(Screen):
         yield Container(Static(pixels))
         yield Dice()
 
+
+class TestScreen(Screen):
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
+        yield Container(Static(NewChar.strength))
+
 console = Console()
 pixels = Pixels.from_image_path("bulbasaur.png")
 
@@ -658,7 +688,7 @@ class MainApp(App):
     SCREENS = {"QuitScreen":QuitScreen(),
                "ChooseRace":ChooseRaceScreen(),
             #    "AbilityScores":AbilityScores(),
-               "TestScreen":RaceRadio(),
+               "TestScreen":TestScreen(),
                "MenuScreen":StartScreen_SC(),
                }
     BINDINGS = [("m", "push_screen('MenuScreen')", "Menu"),

@@ -17,3 +17,13 @@ elf_names = [
     "Soveliss","Thamior","Tharivol",
     "Theren","Varis"
 ]
+
+halfling_names = [
+    "Alton","Ander","Cade",
+    "Corrin","Eldon","Errich",
+    "Finnan","Garret","Lindal",
+    "Lyle","Merric","Milo",
+    "Osborn","Perrin","Reed",
+    "Roscoe","Wellby"
+]
+
