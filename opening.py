@@ -721,8 +721,8 @@ class TestScreen(Screen):
         yield Container(Static(NewChar.strength))
 
 
-console = Console()
-pixels = Pixels.from_image_path("bulbasaur.png")
+# console = Console()
+# pixels = Pixels.from_image_path("bulbasaur.png")
 
 
 class MainApp(App):
