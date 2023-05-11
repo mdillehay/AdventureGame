@@ -140,8 +140,23 @@ class namePicker(Widget):
         "High Elf": names.elf_names,
         "Wood Elf": names.elf_names,
         "Dark Elf (Drow)": names.elf_names,
-        "Lightfoot": names.halfling_names,
-        "Stout": names.halfling_names,
+        "Lightfoot Halfling": names.halfling_names,
+        "Stout Halfling": names.halfling_names,
+        "Calishite (Human)":names.calishite_names,
+        "Chondathan (Human)":names.chondathan_names,
+        "Damaran (Human)":names.damaran_names,
+        "Illuskan (Human)":names.illuskan_names,
+        "Mulan (Human)":names.mulan_names,
+        "Rashemi (Human)":names.rashemi_names,
+        "Shou (Human)":names.shou_names,
+        "Tethyrian (Human)":names.tethyrian_names,
+        "Turami (Human)":names.turami_names,
+        "Dragonborn":names.dragonborn_names,
+        "Forest Gnome":names.gnome_names,
+        "Rock Gnome":names.gnome_names,
+        "Half-Elf":names.elf_names,
+        "Half-Orc":names.orc_names,
+        "Tiefling":names.tiefling_names,
     }
 
     def compose(self) -> ComposeResult:
@@ -710,7 +725,7 @@ class RaceRadio(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Container(Static(pixels))
+        # yield Container(Static(pixels))
         yield Dice()
 
 
