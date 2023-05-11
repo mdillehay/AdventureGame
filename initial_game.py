@@ -5,13 +5,14 @@ import time
 from textual.reactive import reactive
 from textual import *
 
-#Initialized the DB and creates the connector and cursor for the rest of the app
+
+# Initialized the DB and creates the connector and cursor for the rest of the app
 def db_init():
-    conn = sqlite3.connect('wizard.db')
+    conn = sqlite3.connect("wizard.db")
     cur = conn.cursor()
 
     cur.execute(
-"""
+        """
 CREATE TABLE if not exists Wizards
     (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +23,7 @@ CREATE TABLE if not exists Wizards
 """
     )
     cur.execute(
-"""
+        """
 CREATE TABLE IF NOT EXISTS Spells
     (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,39 +43,43 @@ CREATE TABLE IF NOT EXISTS Spells
 
 
 def ClassGetr(class_choice):
-    """ Return the correct python 'class' based on the character's RACE choice. """
+    """Return the correct python 'class' based on the character's RACE choice."""
 
-
-# Add a check for Human Subrace in order to change value to "Human"
-
+    # Add a check for Human Subrace in order to change value to "Human"
 
     character_classes = {
         "Hill Dwarf": HillDwarf(),
-        "Mountain Dwarf":MountainDwarf(),
-        "High Elf":HighElf(),
-        "Wood Elf":WoodElf(),
-        "Dark Elf (Drow)":DarkElf(),
-        "Lightfoot":Lightfoot(),
-        "Stout":Stout(),
-        "Human":Human(),
-        "Forest Gnome":ForestGnome(),
-        "Rock Gnome":RockGnome(),
-        "Dragonborn":Dragonborn(),
-        "Half-Elf":HalfElf(),
-        "Half-Orc":HalfOrc(),
-        "Tiefling":Tiefling(),
+        "Mountain Dwarf": MountainDwarf(),
+        "High Elf": HighElf(),
+        "Wood Elf": WoodElf(),
+        "Dark Elf (Drow)": DarkElf(),
+        "Lightfoot": Lightfoot(),
+        "Stout": Stout(),
+        "Human": Human(),
+        "Forest Gnome": ForestGnome(),
+        "Rock Gnome": RockGnome(),
+        "Dragonborn": Dragonborn(),
+        "Half-Elf": HalfElf(),
+        "Half-Orc": HalfOrc(),
+        "Tiefling": Tiefling(),
     }
 
     class_return = character_classes[class_choice]
     return class_return
 
 
-
-
 class Character:
-    """ Base Class for all characters """
+    """Base Class for all characters"""
 
-    def __init__(self, strength = 0, dexterity = 0, constitution = 0, intelligence = 0, wisdom = 0, charisma = 0) -> None:
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
         self.strength = strength
         self.dexterity = dexterity
         self.constitution = constitution
@@ -85,13 +90,9 @@ class Character:
         self.sex = ""
         self.height = ""
         self.weight = ""
-        self.alignment = "" 
-        self.language_prim = "" 
-        self.language_sec = "" 
-
-
-        
-        
+        self.alignment = ""
+        self.language_prim = ""
+        self.language_sec = ""
 
     def setName(self, name: str) -> None:
         """Set the characters Name"""
@@ -103,7 +104,7 @@ class Character:
 
     def setGender(self, gender: str) -> None:
         """Set the characters Gender"""
-        self.gender = gender        
+        self.gender = gender
 
     def setStrength(self, strength: int) -> None:
         """Set the characters Strength"""
@@ -127,79 +128,165 @@ class Character:
 
     def setCharisma(self, charisma: int) -> None:
         """Set the characters Charisma"""
-        self.charisma = charisma   
+        self.charisma = charisma
+
 
 class Dwarf(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setConstitution(self.constitution + 2)
         self.darkvision = True
-        self.combat_training = ["battleaxe","handaxe","light hammer","warhammer"]
+        self.combat_training = ["battleaxe", "handaxe", "light hammer", "warhammer"]
         self.speed = 25
         self.poison_adv = True
-        self.tool_prof = "" 
+        self.tool_prof = ""
         self.stonecunning = True
         self.language_prim = "Common"
         self.language_sec = "Dwarvish"
 
 
 class MountainDwarf(Dwarf):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setStrength(self.strength + 2)
-        self.armor_prof = ["light","medium"]
-        
-        
+        self.armor_prof = ["light", "medium"]
+
+
 class HillDwarf(Dwarf):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setStrength(self.strength + 4)
 
-class Elf(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
 
-        self.setConstitution(self.constitution +2)
+class Elf(Character):
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
+
+        self.setConstitution(self.constitution + 2)
         self.darkvision = True
         self.keen_senses = True
         self.fey_ancestry = True
         self.language_prim = "Common"
         self.language_sec = "Elvish"
 
-class HighElf(Elf):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
 
-        self.setIntelligence(self.intelligence +1)
-        self.combat_training = ["longsword","shotsword","shortbow","longbow"]
+class HighElf(Elf):
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
+
+        self.setIntelligence(self.intelligence + 1)
+        self.combat_training = ["longsword", "shotsword", "shortbow", "longbow"]
         self.cantrip_count = 1
         self.extra_language_count = 1
 
+
 class WoodElf(Elf):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setWisdom(self.wisdom + 1)
-        self.combat_training = ["longsword","shotsword","shortbow","longbow"]
+        self.combat_training = ["longsword", "shotsword", "shortbow", "longbow"]
         self.fleet_feet = True
         self.mask_of_the_wild = True
 
+
 class DarkElf(Elf):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setCharisma(self.charisma + 1)
         self.superior_darkvision = True
         self.sunlight_sensitivity = True
         self.drow_magic = True
-        self.combat_training = ["rapiers","shortswords","hand crossbows"]
+        self.combat_training = ["rapiers", "shortswords", "hand crossbows"]
+
 
 class Halfling(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setDexterity(self.dexterity + 2)
         self.lucky = True
@@ -208,84 +295,185 @@ class Halfling(Character):
         self.language_prim = "Common"
         self.language_sec = "Halfling"
 
+
 class Lightfoot(Halfling):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setCharisma(self.charisma + 1)
         self.naturally_stealthy = True
 
+
 class Stout(Halfling):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
         self.setConstitution(self.constitution + 1)
         self.stout_resilience = True
 
+
 class Human(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class Dragonborn(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class Gnome(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class ForestGnome(Gnome):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class RockGnome(Gnome):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class HalfElf(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class HalfOrc(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class Tiefling(Character):
-    def __init__(self, strength=0, dexterity=0, constitution=0, intelligence=0, wisdom=0, charisma=0) -> None:
-        super().__init__(strength, dexterity, constitution, intelligence, wisdom, charisma)
-
-
-
-
+    def __init__(
+        self,
+        strength=0,
+        dexterity=0,
+        constitution=0,
+        intelligence=0,
+        wisdom=0,
+        charisma=0,
+    ) -> None:
+        super().__init__(
+            strength, dexterity, constitution, intelligence, wisdom, charisma
+        )
 
 
 class Wizard(Character):
 
     """Defines an individual Wizard"""
 
-    #def __init__(self, name, age, gender):
+    # def __init__(self, name, age, gender):
 
-        #Character.__init__(self, name, age, gender)
+    # Character.__init__(self, name, age, gender)
 
     def setSpecialty(self, specialty):
         self.specialty = specialty
 
     def cast(self):
-        print(f'{self.name} cast an unforgivable curse.\n{self.name} is {self.age} years old.\n{self.name} is a {self.gender}.')
+        print(
+            f"{self.name} cast an unforgivable curse.\n{self.name} is {self.age} years old.\n{self.name} is a {self.gender}."
+        )
 
     def getName(self):
         return self.name
 
     def getAge(self):
         return self.age
-    
+
     def getGender(self):
         return self.gender
 
@@ -303,6 +491,7 @@ The racial bonuses for a {classChoice} are reflected below.
     """
     return content
 
+
 def ChooseNameMark():
     content = """\
 # Choose Your Name
@@ -313,8 +502,6 @@ Choose from a pre-selected list of names on the left or create your own name on 
     return content
 
 
-
-    
 def AbScoreTable():
     content = """\
 # Ability Point Score Table
@@ -351,7 +538,7 @@ def ascii_dice():
 
 
 def DwarfMark():
-    content =  """\
+    content = """\
 # Dwarf
 
 Bold and hardy, dwarves are known as skilled warriors, miners,
@@ -365,7 +552,6 @@ the larger folk.
     return content
 
 
-
 def ElfMark():
     content = """\
 # Elf
@@ -376,7 +562,8 @@ where soft music drifts through the air and gentle fragrences waft on the breeze
 music and poetry, and the good things of the world.
 """
     return content
-    
+
+
 def HalflingMark():
     content = """\
 # Halfling
@@ -388,6 +575,7 @@ peoples. But even these wanderes love peace, food, hearth, and home, though home
 downriver.        
 """
     return content
+
 
 def HumanMark():
     content = """\
@@ -403,13 +591,16 @@ the innovators, the achievers, and the pioneers of the worlds.
 """
     return content
 
+
 def Calishite():
     content = "Shorter and slighter in build that most other humans, Calishites have dusky brown skin, hair, and eyes. They're found primarily in southwest Faerun"
     return content
 
+
 def Chondathan():
     content = "Chondathans are slender, tawny-skinned folk with brown hair that rnages from almost blond to almost black. Most are tall and have green or brown eyes, but these traits are hardly universal. Humans of Chondathan descent dominate the central lands of Faerun, around the Inner Sea."
     return content
+
 
 def Damaran():
     content = """\
@@ -418,12 +609,14 @@ Their hair is usually brown or black, and their eye color varies widely, though 
 """
     return content
 
+
 def Illuskan():
     content = """\
 Illuskans are tall, fair-skinned folk with blue or steely gray eyes. Most have raven-black hair, 
 but those who inhabit the extreme northwest have blond, red, or light brown hair.       
 """
     return content
+
 
 def Mulan():
     content = """\
@@ -434,6 +627,7 @@ nobles and many other Mulan shave off all their hair.
 """
     return content
 
+
 def Rashemi():
     content = """\
 Most often found east of the Inner Sea and often intermingled with the Mulan, Rashemis tend to be short, stout, and 
@@ -441,12 +635,14 @@ muscular. They usually have dusky skin, dark eyes, and thick black hair.
 """
     return content
 
+
 def Shou():
     content = """\
 The Shou are the most numerous and powerful ethnic group in Kara-Tur, far to the east of Faerun. They are yellowish-bronze in hue,
 with black hair and dark eyes. Shou surnames are usually presented before the given name.
 """
     return content
+
 
 def Tethyrian():
     content = """\
@@ -456,12 +652,14 @@ Tethyrians primarily use Chondathan names.
 """
     return content
 
+
 def Turami():
     content = """\
 Native to the southern shore of the Inner Sea, the Turami people are generally tall and muscular, with dark mahogony skin, curly 
 black hair, and dark eyes.
 """
     return content
+
 
 def DragonbornMark():
     content = """\
@@ -474,6 +672,7 @@ others find themselves adrift, with no clear calling in life.
 """
     return content
 
+
 def GnomeMark():
     content = """\
 # Gnome
@@ -483,6 +682,7 @@ punctuate the hum: a crunch of grinding gears here, a minor explosion there, a y
 Gnomes take delight in life, enjoying every moment of invention, exploration, investigation, creation, and play.
 """
     return content
+
 
 def HalfelfMark():
     content = """\
@@ -497,6 +697,7 @@ life.
 """
     return content
 
+
 def HalforcMark():
     content = """\
 # Half-Orc
@@ -508,6 +709,7 @@ the world to prove their worth among humans and other more civilized races. Many
 deeds and notoriety for their barbaric customs and savage fury.        
 """
     return content
+
 
 def TieflingMark():
     content = """\
@@ -524,7 +726,7 @@ their children and their children's children will always be held accountable.
 class Spell:
     """Defines an individual Spell"""
 
-    def __init__(self,name: str, spell_type: str, IsActive: bool):
+    def __init__(self, name: str, spell_type: str, IsActive: bool):
         self.name = name
         self.spell_type = spell_type
         self.IsActive = IsActive
@@ -540,19 +742,20 @@ class Spell:
 
     def setLevel(self, level):
         self.level = level
-    
+
     def getLevel(self):
         return self.level
+
 
 class Item:
     """Defines an individual item"""
 
     def __init__(self) -> None:
         pass
-        
+
     def setName(self, name: str):
         self.name = name
-    
+
     def setType(self, itemType: str):
         self.itemType = itemType
 
@@ -560,61 +763,60 @@ class Item:
         self.level = level
 
 
-#Function to create a Character
+# Function to create a Character
 def createCharacter():
     name = input("What is your new character's name? -- ")
-    print('\n')
+    print("\n")
     age = input("How old is " + name + "? --")
-    print('\n')
-    gender = input("Is "+name+" a male or female? --")
+    print("\n")
+    gender = input("Is " + name + " a male or female? --")
 
-    newChar = Character(name,int(age),gender)
+    newChar = Character(name, int(age), gender)
     return newChar
 
 
-#Function to insert an instance of Wizard Class into the db
-def WizardEntry(conn,cur,wiz):
+# Function to insert an instance of Wizard Class into the db
+def WizardEntry(conn, cur, wiz):
     db_insert = "INSERT INTO Wizards(name,age,gender) VALUES(?,?,?)"
 
-    cur.execute(db_insert,(wiz.name,wiz.age,wiz.gender))
+    cur.execute(db_insert, (wiz.name, wiz.age, wiz.gender))
     conn.commit()
 
 
-#Test function REMOVE before release
+# Test function REMOVE before release
 def test_function():
     x = createCharacter()
     print(x.name, x.age, x.gender)
 
-    y = Wizard(x.name,x.age,x.gender)
+    y = Wizard(x.name, x.age, x.gender)
     print(y.age)
     y.setSpecialty("Ice")
     print(y.specialty)
 
-    s = Spell('Achio','Utility',False)
+    s = Spell("Achio", "Utility", False)
     s.setLevel(10)
 
-    print(f'{s.name} is a {s.spell_type} spell with a power level of {s.level}.')
+    print(f"{s.name} is a {s.spell_type} spell with a power level of {s.level}.")
     if s.IsActive == False:
-        print(f'{s.name} is not currently active')
+        print(f"{s.name} is not currently active")
     else:
-        print(f'{s.name} is currently active')
+        print(f"{s.name} is currently active")
 
     i = Item()
-    i.setName('Mjolnir')
-    i.setType('Melee')
+    i.setName("Mjolnir")
+    i.setType("Melee")
     i.setLevel(100)
     print("\n")
-    print(f'{i.name} is a {i.itemType} weapon with a power level of {i.level}')
-
-
+    print(f"{i.name} is a {i.itemType} weapon with a power level of {i.level}")
 
     time.sleep(10)
-    os.system('clear')
+    os.system("clear")
 
-#Main menu
+
+# Main menu
 def main_menu():
     print(
-"""
+        """
 ##############-----Menu Options-----##############
 
     --> 1: Option 1
@@ -622,8 +824,7 @@ def main_menu():
     --> 3: Option 3
     --> 4: Option 4
 """
-)
-
+    )
 
 
 def main():
@@ -632,8 +833,8 @@ def main():
     while True:
         main_menu()
         selection = input("Enter Selection: ")
-        os.system('clear')
-        if selection == '1':
+        os.system("clear")
+        if selection == "1":
             test_function()
         elif selection == "2":
             print(ElfMark())
@@ -644,5 +845,6 @@ def main():
         else:
             print("Invalid Selection!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

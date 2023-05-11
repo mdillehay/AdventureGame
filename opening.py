@@ -433,9 +433,8 @@ class ChooseClass(Widget):
         
         
         text_file = open("sample.txt", "wt")
-        text_file.write(str(final_choice_id))
+        # text_file.write(str(final_choice_id))
         text_file.write("\n")
-        # text_file.write(str(TabbedContent.id))
         text_file.close()
 
 
