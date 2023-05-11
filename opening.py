@@ -3,7 +3,22 @@ from textual import events
 from textual.app import App, ComposeResult, RenderResult
 from textual.events import Key
 from textual.widget import Widget
-from textual.widgets import Button, Header, Switch, DataTable, Label, Input, Static, Footer, TabbedContent, TabPane, RadioButton, RadioSet, Markdown, OptionList
+from textual.widgets import (
+    Button,
+    Header,
+    Switch,
+    DataTable,
+    Label,
+    Input,
+    Static,
+    Footer,
+    TabbedContent,
+    TabPane,
+    RadioButton,
+    RadioSet,
+    Markdown,
+    OptionList,
+)
 from textual.reactive import reactive
 import initial_game as game
 import time
@@ -25,7 +40,6 @@ TempNewName = ""
 TempNewClass = ""
 
 NewChar = game.Character()
-
 
 
 MAIN_TITLE = """
@@ -59,17 +73,19 @@ ALTERNATE_TITLE = """
 
     """
 
-class startScreenButton(Widget):
 
+class startScreenButton(Widget):
     def compose(self) -> ComposeResult:
-        
-        self.styles.border = ("ascii","green")
+        self.styles.border = ("ascii", "green")
 
         yield Horizontal(
             Button("Start Game", classes="startScreenBtn"),
             Button("Continue Game", classes="startScreenBtn"),
-            Button("Create New Character", classes="startScreenBtn", id="CreateCharacter"),
-            Button("Exit", classes="startScreenBtn", id="exit"), id="startScreenMenu"
+            Button(
+                "Create New Character", classes="startScreenBtn", id="CreateCharacter"
+            ),
+            Button("Exit", classes="startScreenBtn", id="exit"),
+            id="startScreenMenu",
         )
 
     # def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -79,10 +95,9 @@ class startScreenButton(Widget):
     #         pass
 
 
-
 class StartScreen(Widget):
     def compose(self) -> ComposeResult:
-        self.styles.align = ("center","middle")
+        self.styles.align = ("center", "middle")
         yield Container(Static(ALTERNATE_TITLE, id="words"), classes="containerBorder")
         yield Container(startScreenButton(id="st_btn"), classes="containerBorder")
 
@@ -94,19 +109,22 @@ class StartScreen_SC(Screen):
         yield Dice()
         yield StartScreen()
 
+
 class AbilityScores(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Markdown(game.AbilityPointMark(TempNewChar), classes="twentyPercentHeight")
+        yield Markdown(
+            game.AbilityPointMark(TempNewChar), classes="twentyPercentHeight"
+        )
         yield Horizontal(
             Container(Markdown(game.AbScoreTable()), classes="AbScoreData"),
             Container(Button("More Info", id="abs_more_info"), classes="AbScoreButton"),
             Container(newCharacterStats(), classes="fiftyPercent_AbScoreScreen"),
-            classes="AbScoreHorizHeight"
+            classes="AbScoreHorizHeight",
         )
         yield Dice()
-    
+
     def on_mount(self):
         app.title = "Choose Ability Score"
 
@@ -118,30 +136,47 @@ class AbilityScores(Screen):
 class namePicker(Widget):
     character_classes = {
         "Hill Dwarf": names.dwarf_names,
-        "Mountain Dwarf":names.dwarf_names,
-        "High Elf":names.elf_names,
-        "Wood Elf":names.elf_names,
-        "Dark Elf (Drow)":names.elf_names,
-        "Lightfoot":names.halfling_names,
-        "Stout":names.halfling_names,
+        "Mountain Dwarf": names.dwarf_names,
+        "High Elf": names.elf_names,
+        "Wood Elf": names.elf_names,
+        "Dark Elf (Drow)": names.elf_names,
+        "Lightfoot": names.halfling_names,
+        "Stout": names.halfling_names,
     }
 
     def compose(self) -> ComposeResult:
         names = self.character_classes.get(TempNewChar)
         length = len(names)
-        yield OptionList(*[names[i] for i in range(length)], classes="height80", id="char_names")
-        yield Container(Button("Select Name", id="picker_button"), classes="nameCreatorButton")
+        yield OptionList(
+            *[names[i] for i in range(length)], classes="height80", id="char_names"
+        )
+        yield Container(
+            Button("Select Name", id="picker_button"), classes="nameCreatorButton"
+        )
 
 
 class nameCreator(Widget):
-
     def compose(self) -> ComposeResult:
         val = TempNewChar.upper()
-        yield Container(Markdown((f"""## Create Your Name \nYou can create your own name for your {val} below"""), classes="nameCreatorMark"), classes="height20")
+        yield Container(
+            Markdown(
+                (
+                    f"""## Create Your Name \nYou can create your own name for your {val} below"""
+                ),
+                classes="nameCreatorMark",
+            ),
+            classes="height20",
+        )
         yield Vertical(
-            Container(Input(placeholder="Your Name Here", classes="nameCreatorInput"),classes="nameCreatorButton"),
-            Container(Button("Submit Name", classes="nameCreatorButton", id="creator_button"),classes="nameCreatorButton"),
-            classes="nameCreatorCenter"
+            Container(
+                Input(placeholder="Your Name Here", classes="nameCreatorInput"),
+                classes="nameCreatorButton",
+            ),
+            Container(
+                Button("Submit Name", classes="nameCreatorButton", id="creator_button"),
+                classes="nameCreatorButton",
+            ),
+            classes="nameCreatorCenter",
         )
 
     def on_button_pressed(self, event: Button.Pressed):
@@ -155,11 +190,14 @@ class namePickerScreen(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Container(Markdown(game.ChooseNameMark(), classes="namePickerMark"), classes="height20")
+        yield Container(
+            Markdown(game.ChooseNameMark(), classes="namePickerMark"),
+            classes="height20",
+        )
         yield Horizontal(
             Container(namePicker(), classes="namePickerCenter"),
             Container(nameCreator(), classes="namePickerCenter"),
-            classes="namePickerScreenHeight"
+            classes="namePickerScreenHeight",
         )
         yield Dice()
 
@@ -167,9 +205,9 @@ class namePickerScreen(Screen):
         app.title = "Choose Your Name"
 
     option_choice = ""
+
     def on_option_list_option_highlighted(self, event: OptionList.OptionSelected):
         self.option_choice = event.option.prompt
-        
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         global TempNewName
@@ -180,47 +218,42 @@ class namePickerScreen(Screen):
 
 
 class StatsInput(Input):
-
     def value_check(self) -> None:
         try:
             if int(self.value) < 8:
-                self.value = '8'
+                self.value = "8"
             elif int(self.value) > 15:
-                self.value = '15'
+                self.value = "15"
             elif self.value == "":
                 pass
             else:
                 pass
         except ValueError:
             pass
-            
 
     async def on_blur(self) -> None:
         self.value_check()
 
 
-
 class newCharacterStats(Widget):
-    
     kv_attributes = {
-        "strength":"#strength_cost",
-        "dexterity":"#dexterity_cost",
-        "constitution":"#constitution_cost",
-        "intelligence":"#intelligence_cost",
-        "wisdom":"#wisdom_cost",
-        "charisma":"#charisma_cost",
+        "strength": "#strength_cost",
+        "dexterity": "#dexterity_cost",
+        "constitution": "#constitution_cost",
+        "intelligence": "#intelligence_cost",
+        "wisdom": "#wisdom_cost",
+        "charisma": "#charisma_cost",
     }
 
     kv_costs = {
-        "8":"0",
-        "9":"1",
-        "10":"2",
-        "11":"3",
-        "12":"4",
-        "13":"5",
-        "14":"7",
-        "15":"9",
-
+        "8": "0",
+        "9": "1",
+        "10": "2",
+        "11": "3",
+        "12": "4",
+        "13": "5",
+        "14": "7",
+        "15": "9",
     }
 
     list_cost_labels = [
@@ -229,9 +262,9 @@ class newCharacterStats(Widget):
         "constitution_cost",
         "intelligence_cost",
         "wisdom_cost",
-        "charisma_cost"
+        "charisma_cost",
     ]
-    
+
     def compose(self) -> ComposeResult:
         choice = game.ClassGetr(TempNewChar)
         yield Label("Attribute", classes="bold")
@@ -257,7 +290,7 @@ class newCharacterStats(Widget):
         yield Input(value="0", id="intelligence_cost", disabled=True)
         yield Label("Wisdom", classes="attributeLabel")
         yield StatsInput(placeholder="0", id="wisdom")
-        yield Input(value=(str(choice.wisdom)), classes="green", disabled=True) 
+        yield Input(value=(str(choice.wisdom)), classes="green", disabled=True)
         yield Input(value="0", id="wisdom_cost", disabled=True)
         yield Label("Charisma", classes="attributeLabel")
         yield StatsInput(placeholder="0", id="charisma")
@@ -267,12 +300,10 @@ class newCharacterStats(Widget):
         yield Label("Cost Total = ", classes="attributeLabel")
         yield Input(value="0", id="CostTotal", disabled=True)
 
-    
-
     def on_input_changed(self, event: Input.Changed) -> None:
         att_name = event.input.id
         att_value = event.input.value
-        
+
         if att_name in self.kv_attributes:
             # cost_val = self.query_one("#strength_cost")
             # cost_val.value = att_value
@@ -297,7 +328,7 @@ class newCharacterStats(Widget):
     def on_input_submitted(self, event: Input.Submitted):
         local_node = event.input
         if int(event.value) < 8:
-            current_node = self.query_one(("#"+str(local_node.id)))
+            current_node = self.query_one(("#" + str(local_node.id)))
             current_node.value = "8"
         else:
             pass
@@ -311,8 +342,8 @@ class newCharacterStats(Widget):
         total = 0
         for item in self.query("Input"):
             if item.id in self.list_cost_labels:
-                total = total + int(item.value)    
-        return total    
+                total = total + int(item.value)
+        return total
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         total = self.cost_total()
@@ -339,13 +370,14 @@ class newCharacterStats(Widget):
                     NewChar.setCharisma(att.value)
                 else:
                     pass
-            
+
             app.push_screen(ChooseClassScreen())
 
+
 class Work_Continues(Screen):
-    
     def compose(self) -> ComposeResult:
         yield Static("The Work Continues ... more to follow", classes="containerBorder")
+
 
 class ModalScreen_27(Screen):
     statement = """\
@@ -357,7 +389,8 @@ class ModalScreen_27(Screen):
         yield Container(Button("Go Back"), classes="containerBorder")
 
     def on_button_pressed(self, event: Button.Pressed):
-        app.pop_screen()    
+        app.pop_screen()
+
 
 class ModalScreen_8_15(Screen):
     statement = """\
@@ -373,7 +406,6 @@ class ModalScreen_8_15(Screen):
 
 
 class QuitScreen(Screen):
-    
     question = """\
 # Do you really want to quit?
         """
@@ -382,7 +414,8 @@ class QuitScreen(Screen):
         yield Container(Markdown(self.question), classes="containerBorder")
         yield Horizontal(
             Button("Yes", id="quit_yes", classes="startScreenBtn"),
-            Button("No", id="quit_no", classes="startScreenBtn"), id="startScreenMenu"
+            Button("No", id="quit_no", classes="startScreenBtn"),
+            id="startScreenMenu",
         )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -390,6 +423,7 @@ class QuitScreen(Screen):
             app.exit()
         else:
             app.pop_screen()
+
 
 class ModalScreen_TooMany(Screen):
     statement = """\
@@ -402,6 +436,7 @@ class ModalScreen_TooMany(Screen):
 
     def on_button_pressed(self, event: Button.Pressed):
         app.pop_screen()
+
 
 class ChooseClass(Widget):
     def compose(self) -> ComposeResult:
@@ -425,22 +460,18 @@ class ChooseClass(Widget):
 ### Saving Throw Proficiencies: \n {sav_throw_prof}
 ### Armor and Weapon Proficiencies: \n {ar_wpn_prof}
                     
-                    """    
+                    """
                 with TabPane(c_class, id=c_class):
                     yield Markdown(md, classes="ta_class")
 
     def on_button_pressed(self, event: Button.Pressed):
-        
-        
         text_file = open("sample.txt", "wt")
         # text_file.write(str(final_choice_id))
         text_file.write("\n")
         text_file.close()
 
 
-
 class ChooseClassScreen(Screen):
-    
     def compose(self) -> ComposeResult:
         self.styles.align_horizontal = "center"
         yield Header()
@@ -448,7 +479,7 @@ class ChooseClassScreen(Screen):
         yield Horizontal(
             Container(ChooseClass(), classes="choose_race_screen_80"),
             Container(ClassRadioButton(), classes="choose_race_screen_20"),
-            classes="choose_race_screen_hz"
+            classes="choose_race_screen_hz",
         )
         yield Dice()
 
@@ -464,7 +495,7 @@ class ClassRadioButton(Widget):
                 yield RadioButton(item, id=item)
 
         yield Button("Submit", classes="border")
-    
+
     def on_button_pressed(self, event: Button.Pressed):
         c_class = self.query_one(RadioSet).pressed_button
         global TempNewClass
@@ -478,10 +509,9 @@ class RaceRadioButton(Widget):
             for item in character_dev_lists.character_races:
                 yield RadioButton(item, id=item)
         yield Label("Choose Character's Gender")
-        yield RadioSet("Male","Female","Other")
+        yield RadioSet("Male", "Female", "Other")
         yield Button("Submit", classes="border")
 
-    
     def on_button_pressed(self, event: Button.Pressed):
         race = self.query_one("#race_radio_set").pressed_button
         global TempNewChar
@@ -493,27 +523,46 @@ class RaceRadioButton(Widget):
         text_file.close()
         app.push_screen(namePickerScreen())
 
+
 class ChooseRace(Widget):
     BINDINGS = [("escape", "app.pop_screen", "Go Back")]
 
     dwarf_subraces = ["Hill Dwarf", "Mountain Dwarf"]
-    elf_subraces = ["High Elf", "Wood Elf","Dark Elf (Drow)"]
-    halfling_subraces = ["Lightfoot","Stout"]
-    human_subraces = ["Calishite","Chondathan","Damaran","Illuskan","Mulan","Rashemi","Shou","Tethyrian","Turami"]
-    gnome_subraces = ["Forest Gnome","Rock Gnome"]
-    hum_sub_info = {"Calishite":game.Calishite(), "Chondathan": game.Chondathan(), "Damaran":game.Damaran(), "Illuskan":game.Illuskan(), "Mulan":game.Mulan(), "Rashemi":game.Rashemi(),
-                    "Shou":game.Shou(), "Tethyrian":game.Tethyrian(), "Turami":game.Turami()
-                    }
+    elf_subraces = ["High Elf", "Wood Elf", "Dark Elf (Drow)"]
+    halfling_subraces = ["Lightfoot", "Stout"]
+    human_subraces = [
+        "Calishite",
+        "Chondathan",
+        "Damaran",
+        "Illuskan",
+        "Mulan",
+        "Rashemi",
+        "Shou",
+        "Tethyrian",
+        "Turami",
+    ]
+    gnome_subraces = ["Forest Gnome", "Rock Gnome"]
+    hum_sub_info = {
+        "Calishite": game.Calishite(),
+        "Chondathan": game.Chondathan(),
+        "Damaran": game.Damaran(),
+        "Illuskan": game.Illuskan(),
+        "Mulan": game.Mulan(),
+        "Rashemi": game.Rashemi(),
+        "Shou": game.Shou(),
+        "Tethyrian": game.Tethyrian(),
+        "Turami": game.Turami(),
+    }
     global TempNewChar
 
     def compose(self) -> ComposeResult:
-        self.styles.align_horizontal = ("center")
-        
+        self.styles.align_horizontal = "center"
+
         with TabbedContent():
-            with TabPane('Dwarf'):
+            with TabPane("Dwarf"):
                 yield Markdown(game.DwarfMark())
-            
-            with TabPane('Elf'):
+
+            with TabPane("Elf"):
                 yield Markdown(game.ElfMark())
 
             with TabPane("Halfling"):
@@ -524,7 +573,6 @@ class ChooseRace(Widget):
                 with TabbedContent():
                     for sub in self.human_subraces:
                         yield TabPane(sub, Markdown(self.hum_sub_info[sub]))
-                        
 
             with TabPane("Dragonborn"):
                 yield Markdown(game.DragonbornMark())
@@ -543,10 +591,8 @@ class ChooseRace(Widget):
 
 
 class AbScoreSummary(Widget):
-    
-
     def compose(self) -> ComposeResult:
-        self.styles.align_horizontal = ("center")
+        self.styles.align_horizontal = "center"
         with TabbedContent():
             with TabPane("Strength"):
                 yield Markdown(abss.strength)
@@ -561,14 +607,15 @@ class AbScoreSummary(Widget):
             with TabPane("Charisma"):
                 yield Markdown(abss.charisma)
 
-class ModalScreen_AbScoreSummary(Screen):
 
+class ModalScreen_AbScoreSummary(Screen):
     def compose(self) -> ComposeResult:
         yield Container(AbScoreSummary(), classes="containerBorder")
         yield Container(Button("Go Back"), classes="containerBorder")
 
     def on_button_pressed(self, event: Button.Pressed):
         app.pop_screen()
+
 
 class ChooseRaceScreen(Screen):
     def compose(self) -> ComposeResult:
@@ -577,10 +624,10 @@ class ChooseRaceScreen(Screen):
         yield Horizontal(
             Container(ChooseRace(), classes="choose_race_screen_80"),
             Container(RaceRadioButton(), classes="choose_race_screen_20"),
-            classes="choose_race_screen_hz"
+            classes="choose_race_screen_hz",
         )
         yield Dice()
-    
+
     def on_mount(self) -> None:
         app.title = "Choose Your Race"
 
@@ -590,54 +637,48 @@ class Dice(Widget):
         yield Container(Static(game.ascii_dice(), classes="dice_ascii"), classes="hkey")
         yield Vertical(
             Horizontal(
-            Label("Die Size", classes="dice_label"),
-            Label("On/Off", classes="dice_label"),
-            Label("# of Die", classes="dice_label"),
-            classes="dice_horiz"
+                Label("Die Size", classes="dice_label"),
+                Label("On/Off", classes="dice_label"),
+                Label("# of Die", classes="dice_label"),
+                classes="dice_horiz",
             ),
-
             Horizontal(
-            Static("d4 ->   ", classes="dice_auto"),
-            Switch(value = False, classes="dice_auto", id="d4", name="4"),
-            Input(placeholder="0", classes="dice_auto", id="d4count"),
-            classes="dice_horiz"
+                Static("d4 ->   ", classes="dice_auto"),
+                Switch(value=False, classes="dice_auto", id="d4", name="4"),
+                Input(placeholder="0", classes="dice_auto", id="d4count"),
+                classes="dice_horiz",
             ),
-            
             Horizontal(
-            Static("d6 ->   ", classes="dice_auto"),
-            Switch(value = False, classes="dice_auto", id="d6", name="6"),
-            Input(placeholder="0", classes="dice_auto", id="d6count"),
-            classes="dice_horiz"
+                Static("d6 ->   ", classes="dice_auto"),
+                Switch(value=False, classes="dice_auto", id="d6", name="6"),
+                Input(placeholder="0", classes="dice_auto", id="d6count"),
+                classes="dice_horiz",
             ),
-
             Horizontal(
-            Static("d8 ->   ", classes="dice_auto"),
-            Switch(value = False, classes="dice_auto",id="d8",name="8"),
-            Input(placeholder="0", classes="dice_auto",id="d8count"),
-            classes="dice_horiz"
+                Static("d8 ->   ", classes="dice_auto"),
+                Switch(value=False, classes="dice_auto", id="d8", name="8"),
+                Input(placeholder="0", classes="dice_auto", id="d8count"),
+                classes="dice_horiz",
             ),
-
             Horizontal(
-            Static("d10 ->  ", classes="dice_auto"),
-            Switch(value = False, classes="dice_auto",id="d10", name="10"),
-            Input(placeholder="0", classes="dice_auto", id="d10count"),
-            classes="dice_horiz"
+                Static("d10 ->  ", classes="dice_auto"),
+                Switch(value=False, classes="dice_auto", id="d10", name="10"),
+                Input(placeholder="0", classes="dice_auto", id="d10count"),
+                classes="dice_horiz",
             ),
-
             Horizontal(
-            Static("d12 ->  ", classes="dice_auto"),
-            Switch(value = False, classes="dice_auto", id="d12", name="12"),
-            Input(placeholder="0", classes="dice_auto", id="d12count"),
-            classes="dice_horiz"
+                Static("d12 ->  ", classes="dice_auto"),
+                Switch(value=False, classes="dice_auto", id="d12", name="12"),
+                Input(placeholder="0", classes="dice_auto", id="d12count"),
+                classes="dice_horiz",
             ),
-            
             Horizontal(
-            Static("d20 ->  ", classes="dice_auto"),
-            Switch(value = False, classes="dice_auto", id="d20", name="20"),
-            Input(placeholder="0", classes="dice_auto", id="d20count"),
-            classes="dice_horiz"
-            )
-            , classes="dice_50"
+                Static("d20 ->  ", classes="dice_auto"),
+                Switch(value=False, classes="dice_auto", id="d20", name="20"),
+                Input(placeholder="0", classes="dice_auto", id="d20count"),
+                classes="dice_horiz",
+            ),
+            classes="dice_50",
         )
         yield Button("Roll Dice")
         yield Container(Static(" ", id="dice_response"))
@@ -646,23 +687,24 @@ class Dice(Widget):
         self.can_focus = False
         self.can_focus_children = False
 
-    def dice_roll ( self ) -> str:
+    def dice_roll(self) -> str:
         content = "----------------------------\n"
         for item in self.query(Switch):
             if item.value == True:
                 count = self.query_one(("#" + item.id + "count"))
                 num_die = int(count.value)
-                for i in range(1,(num_die +1)):
-                    result = randint(1,int(item.name))
-                    line = (f"{item.id} Roll {i} is: -> " + str(result) + " \n")
+                for i in range(1, (num_die + 1)):
+                    result = randint(1, int(item.name))
+                    line = f"{item.id} Roll {i} is: -> " + str(result) + " \n"
                     content += line
                 content += "----------------------------\n"
 
         return content
-    
+
     def on_button_pressed(self, event: Button.Pressed):
         response = self.query_one("#dice_response")
         response.update(self.dice_roll())
+
 
 class RaceRadio(Screen):
     def compose(self) -> ComposeResult:
@@ -678,39 +720,39 @@ class TestScreen(Screen):
         yield Footer()
         yield Container(Static(NewChar.strength))
 
+
 console = Console()
 pixels = Pixels.from_image_path("bulbasaur.png")
+
 
 class MainApp(App):
     CSS_PATH = "opening.css"
     # CSS_PATH = "multiple.css"
-    SCREENS = {"QuitScreen":QuitScreen(),
-               "ChooseRace":ChooseRaceScreen(),
-            #    "AbilityScores":AbilityScores(),
-               "TestScreen":TestScreen(),
-               "MenuScreen":StartScreen_SC(),
-               }
-    BINDINGS = [("m", "push_screen('MenuScreen')", "Menu"),
-                ("q", "push_screen('QuitScreen')", "Quit"),
-                ("t", "push_screen('TestScreen')", "Test Screen"),
-                ("d", "toggle_dice('Dice', '-active')", "Dice"),
-                # ("t", "push_screen('cover')", "Title")
+    SCREENS = {
+        "QuitScreen": QuitScreen(),
+        "ChooseRace": ChooseRaceScreen(),
+        #    "AbilityScores":AbilityScores(),
+        "TestScreen": TestScreen(),
+        "MenuScreen": StartScreen_SC(),
+    }
+    BINDINGS = [
+        ("m", "push_screen('MenuScreen')", "Menu"),
+        ("q", "push_screen('QuitScreen')", "Quit"),
+        ("t", "push_screen('TestScreen')", "Test Screen"),
+        ("d", "toggle_dice('Dice', '-active')", "Dice"),
+        # ("t", "push_screen('cover')", "Title")
     ]
 
     TITLE = "Adventure Game"
-    
 
     def compose(self) -> ComposeResult:
-        self.styles.align = ("center","middle")
+        self.styles.align = ("center", "middle")
         yield Header(show_clock=True)
         yield StartScreen()
         yield Dice()
         # yield StartScreen()
         yield Footer()
-        
-        
-        
-     
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "CreateCharacter":
             app.push_screen("ChooseRace")
@@ -721,9 +763,9 @@ class MainApp(App):
 
     def action_toggle_dice(self, selector: str, class_name: str) -> None:
         self.screen.query(selector).toggle_class(class_name)
-        
+
         if self.query_one("Dice").can_focus == False:
-            self.query_one("Dice").can_focus = True    
+            self.query_one("Dice").can_focus = True
             self.query_one("Dice").can_focus_children = True
         else:
             self.query_one("Dice").can_focus = False
