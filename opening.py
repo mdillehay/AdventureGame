@@ -75,6 +75,7 @@ ALTERNATE_TITLE = """
 
 
 class startScreenButton(Widget):
+    """Widget that yields the Buttons for the Start Screen"""
     def compose(self) -> ComposeResult:
         self.styles.border = ("ascii", "green")
 
@@ -96,6 +97,7 @@ class startScreenButton(Widget):
 
 
 class StartScreen(Widget):
+    """Widget that yields the Ascii Title and Start Screen Buttons"""
     def compose(self) -> ComposeResult:
         self.styles.align = ("center", "middle")
         yield Container(Static(ALTERNATE_TITLE, id="words"), classes="containerBorder")
@@ -103,6 +105,7 @@ class StartScreen(Widget):
 
 
 class StartScreen_SC(Screen):
+    """Screen that yields Start Screen widget"""
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
@@ -111,6 +114,7 @@ class StartScreen_SC(Screen):
 
 
 class AbilityScores(Screen):
+    """Screen that yields Ability Point information for chosen Race and the stats selection widget"""
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
@@ -134,6 +138,7 @@ class AbilityScores(Screen):
 
 
 class namePicker(Widget):
+    """Widget that returns a pre-made list of character names based on Race choice"""
     character_classes = {
         "Hill Dwarf": names.dwarf_names,
         "Mountain Dwarf": names.dwarf_names,
@@ -171,6 +176,7 @@ class namePicker(Widget):
 
 
 class nameCreator(Widget):
+    """Widget that allows USER to create their own Character Name"""
     def compose(self) -> ComposeResult:
         val = TempNewChar.upper()
         yield Container(
@@ -202,6 +208,7 @@ class nameCreator(Widget):
 
 
 class namePickerScreen(Screen):
+    """Screen that yields the NamePicker and NameCreator widgets"""
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
@@ -233,6 +240,7 @@ class namePickerScreen(Screen):
 
 
 class StatsInput(Input):
+    """Input widget that checks to ensure Stat Score is within acceptable range"""
     def value_check(self) -> None:
         try:
             if int(self.value) < 8:
@@ -251,6 +259,7 @@ class StatsInput(Input):
 
 
 class newCharacterStats(Widget):
+    """Widget that returns the Base Stats from chosen Race"""
     kv_attributes = {
         "strength": "#strength_cost",
         "dexterity": "#dexterity_cost",
@@ -320,8 +329,6 @@ class newCharacterStats(Widget):
         att_value = event.input.value
 
         if att_name in self.kv_attributes:
-            # cost_val = self.query_one("#strength_cost")
-            # cost_val.value = att_value
             if att_value in self.kv_costs:
                 var = self.kv_attributes.get(att_name)
                 cost_val = self.query_one(var)
@@ -341,12 +348,8 @@ class newCharacterStats(Widget):
                 item.remove_class("green")
 
     def on_input_submitted(self, event: Input.Submitted):
-        local_node = event.input
         if int(event.value) < 8:
-            current_node = self.query_one(("#" + str(local_node.id)))
-            current_node.value = "8"
-        else:
-            pass
+            event.value == "8"
 
         if int(event.value) > 15:
             event.value == "15"
@@ -395,6 +398,7 @@ class Work_Continues(Screen):
 
 
 class ModalScreen_27(Screen):
+    """Pop-up modal if Ability Point Score exceeds 27"""
     statement = """\
 # Cost total cannot exceed 27      
     """
@@ -407,20 +411,8 @@ class ModalScreen_27(Screen):
         app.pop_screen()
 
 
-class ModalScreen_8_15(Screen):
-    statement = """\
-# Score must be between 8 and 15      
-    """
-
-    def compose(self) -> ComposeResult:
-        yield Container(Markdown(self.statement), classes="containerBorder")
-        yield Container(Button("Go Back"), classes="containerBorder")
-
-    def on_button_pressed(self, event: Button.Pressed):
-        app.pop_screen()
-
-
 class QuitScreen(Screen):
+    """Confirmation for quitting the app"""
     question = """\
 # Do you really want to quit?
         """
@@ -440,20 +432,8 @@ class QuitScreen(Screen):
             app.pop_screen()
 
 
-class ModalScreen_TooMany(Screen):
-    statement = """\
-# You can only choose one Class        
-    """
-
-    def compose(self) -> ComposeResult:
-        yield Container(Markdown(self.statement), classes="containerBorder")
-        yield Container(Button("Go Back"), classes="containerBorder")
-
-    def on_button_pressed(self, event: Button.Pressed):
-        app.pop_screen()
-
-
 class ChooseClass(Widget):
+    """Widget that returns Class information"""
     def compose(self) -> ComposeResult:
         self.styles.width = "70w"
         self.styles.align_horizontal = "center"
@@ -479,14 +459,9 @@ class ChooseClass(Widget):
                 with TabPane(c_class, id=c_class):
                     yield Markdown(md, classes="ta_class")
 
-    def on_button_pressed(self, event: Button.Pressed):
-        text_file = open("sample.txt", "wt")
-        # text_file.write(str(final_choice_id))
-        text_file.write("\n")
-        text_file.close()
-
 
 class ChooseClassScreen(Screen):
+    """Screen that yields ChooseClass widget and ClassRadioButton widget"""
     def compose(self) -> ComposeResult:
         self.styles.align_horizontal = "center"
         yield Header()
@@ -503,6 +478,7 @@ class ChooseClassScreen(Screen):
 
 
 class ClassRadioButton(Widget):
+    """Widget that yields a RadioSet of Character Class Options, eg... Barbarian, Bard, etc..."""
     def compose(self) -> ComposeResult:
         self.styles.align = ("center", "middle")
         with RadioSet():
@@ -518,6 +494,7 @@ class ClassRadioButton(Widget):
 
 
 class RaceRadioButton(Widget):
+    """Widget that yields a RadioSet of Character Race Options, eg... Hill Dwarf, Mountain Dwarf, etc..."""
     def compose(self) -> ComposeResult:
         self.styles.align = ("center", "middle")
         with RadioSet(id="race_radio_set"):
@@ -540,6 +517,7 @@ class RaceRadioButton(Widget):
 
 
 class ChooseRace(Widget):
+    """Widget that returns Markdown information about each Character Race option."""
     BINDINGS = [("escape", "app.pop_screen", "Go Back")]
 
     dwarf_subraces = ["Hill Dwarf", "Mountain Dwarf"]
@@ -606,6 +584,7 @@ class ChooseRace(Widget):
 
 
 class AbScoreSummary(Widget):
+    """Widget that returns a summary of Ability Scores and how they affect each Race"""
     def compose(self) -> ComposeResult:
         self.styles.align_horizontal = "center"
         with TabbedContent():
@@ -624,6 +603,7 @@ class AbScoreSummary(Widget):
 
 
 class ModalScreen_AbScoreSummary(Screen):
+    """Screen that yields the AbScoreSummary widget"""
     def compose(self) -> ComposeResult:
         yield Container(AbScoreSummary(), classes="containerBorder")
         yield Container(Button("Go Back"), classes="containerBorder")
@@ -633,6 +613,7 @@ class ModalScreen_AbScoreSummary(Screen):
 
 
 class ChooseRaceScreen(Screen):
+    """Screen that yields the ChooseRace widget and RaceRadioButton widget"""
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
@@ -648,6 +629,7 @@ class ChooseRaceScreen(Screen):
 
 
 class Dice(Widget):
+    """Widget that generates the dice rolling sidebar"""
     def compose(self) -> ComposeResult:
         yield Container(Static(game.ascii_dice(), classes="dice_ascii"), classes="hkey")
         yield Vertical(

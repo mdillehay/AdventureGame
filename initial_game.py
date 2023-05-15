@@ -5,9 +5,14 @@ import time
 from textual.reactive import reactive
 from textual import *
 
-
+# ---------------------------------------------------------------------------------
 # Initialized the DB and creates the connector and cursor for the rest of the app
+# 
+# This likely need to be moved to its own file at somepoint
+# ---------------------------------------------------------------------------------
 def db_init():
+    """Initializes database and returns standard conn and cur"""
+
     conn = sqlite3.connect("wizard.db")
     cur = conn.cursor()
 
@@ -136,6 +141,7 @@ class Character:
 
 
 class Dwarf(Character):
+    """Class definition of a Dwarf, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -161,6 +167,7 @@ class Dwarf(Character):
 
 
 class MountainDwarf(Dwarf):
+    """Class definition of Mountain Dwarf, inherits from Dwarf and Character"""
     def __init__(
         self,
         strength=0,
@@ -179,6 +186,7 @@ class MountainDwarf(Dwarf):
 
 
 class HillDwarf(Dwarf):
+    """Class definition of Hill Dwarf, inherits from Dwarf and Character"""
     def __init__(
         self,
         strength=0,
@@ -196,6 +204,7 @@ class HillDwarf(Dwarf):
 
 
 class Elf(Character):
+    """Class definition of Elf, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -218,6 +227,7 @@ class Elf(Character):
 
 
 class HighElf(Elf):
+    """Class definitio of High Elf, inherits from Elf and Character"""
     def __init__(
         self,
         strength=0,
@@ -238,6 +248,7 @@ class HighElf(Elf):
 
 
 class WoodElf(Elf):
+    """Class definition of Wood Elf, inherits from Elf and Character"""
     def __init__(
         self,
         strength=0,
@@ -258,6 +269,7 @@ class WoodElf(Elf):
 
 
 class DarkElf(Elf):
+    """Class definition of Dark Elf (Drow), inherits from Elf and Character"""
     def __init__(
         self,
         strength=0,
@@ -279,6 +291,7 @@ class DarkElf(Elf):
 
 
 class Halfling(Character):
+    """Class definition of Halfling, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -301,6 +314,7 @@ class Halfling(Character):
 
 
 class Lightfoot(Halfling):
+    """Class definition of a Lightfoot Halfling, inherits from Halfling and Character"""
     def __init__(
         self,
         strength=0,
@@ -319,6 +333,7 @@ class Lightfoot(Halfling):
 
 
 class Stout(Halfling):
+    """Class definition of a Stout Halfling, inherits from Halfling and Character"""
     def __init__(
         self,
         strength=0,
@@ -337,6 +352,7 @@ class Stout(Halfling):
 
 
 class Human(Character):
+    """Class definition of a Human, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -352,6 +368,7 @@ class Human(Character):
 
 
 class Dragonborn(Character):
+    """Class definition of a Dragonborn, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -367,6 +384,7 @@ class Dragonborn(Character):
 
 
 class Gnome(Character):
+    """Class definitio of a Gnome, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -382,6 +400,7 @@ class Gnome(Character):
 
 
 class ForestGnome(Gnome):
+    """Class definition of a Forest Gnome, inherits from Gnome and Character"""
     def __init__(
         self,
         strength=0,
@@ -397,6 +416,7 @@ class ForestGnome(Gnome):
 
 
 class RockGnome(Gnome):
+    """Class definitionm of Rock Gnome, inherits from Gnome and Character"""
     def __init__(
         self,
         strength=0,
@@ -412,6 +432,7 @@ class RockGnome(Gnome):
 
 
 class HalfElf(Character):
+    """Class definition of a Half-Elf, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -427,6 +448,7 @@ class HalfElf(Character):
 
 
 class HalfOrc(Character):
+    """Class definition of a Half-Orc, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -442,6 +464,7 @@ class HalfOrc(Character):
 
 
 class Tiefling(Character):
+    """Class definition of a Tiefling, inherits from Character"""
     def __init__(
         self,
         strength=0,
@@ -483,6 +506,7 @@ class Wizard(Character):
 
 
 def AbilityPointMark(class_choice: str):
+    """Returns Markdown for Ability Point Screen"""
     classChoice = class_choice
 
     content = f"""\
@@ -497,6 +521,7 @@ The racial bonuses for a {classChoice} are reflected below.
 
 
 def ChooseNameMark():
+    """Returns Markdown Choose Name Screen"""
     content = """\
 # Choose Your Name
 
@@ -507,6 +532,7 @@ Choose from a pre-selected list of names on the left or create your own name on 
 
 
 def AbScoreTable():
+    """Returns Markdown for Ability Score Point Table"""
     content = """\
 # Ability Point Score Table
 
@@ -525,6 +551,8 @@ def AbScoreTable():
 
 
 def ascii_dice():
+    """Returns Markdown for dice ascii image"""
+
     content = """\
     .----------.     ________
    /          /|    /\       \\
@@ -542,6 +570,7 @@ def ascii_dice():
 
 
 def DwarfMark():
+    """Returns Markdown for Dwarf explanation"""
     content = """\
 # Dwarf
 
@@ -557,6 +586,7 @@ the larger folk.
 
 
 def ElfMark():
+    """Returns Markdown for Elf explanation"""
     content = """\
 # Elf
 
@@ -569,6 +599,7 @@ music and poetry, and the good things of the world.
 
 
 def HalflingMark():
+    """Returns Markdown for Halfling explanation"""
     content = """\
 # Halfling
 
@@ -582,6 +613,7 @@ downriver.
 
 
 def HumanMark():
+    """Returns Markdown for Human explanation"""
     content = """\
 # Human
 
@@ -597,16 +629,19 @@ the innovators, the achievers, and the pioneers of the worlds.
 
 
 def Calishite():
+    """Returns Markdown for Calshite explanation"""
     content = "Shorter and slighter in build that most other humans, Calishites have dusky brown skin, hair, and eyes. They're found primarily in southwest Faerun"
     return content
 
 
 def Chondathan():
+    """Returns Markdown for Chondathan explanation"""
     content = "Chondathans are slender, tawny-skinned folk with brown hair that rnages from almost blond to almost black. Most are tall and have green or brown eyes, but these traits are hardly universal. Humans of Chondathan descent dominate the central lands of Faerun, around the Inner Sea."
     return content
 
 
 def Damaran():
+    """Returns Markdown for Damaran explanation"""
     content = """\
 Found primarily in the northwest of Faerun, Damarans are of moderate height and build, with skin hues ranging from tawny to fair.
 Their hair is usually brown or black, and their eye color varies widely, though brown is most common.            
@@ -615,6 +650,7 @@ Their hair is usually brown or black, and their eye color varies widely, though 
 
 
 def Illuskan():
+    """Returns Markdown for Illuskan explanation"""
     content = """\
 Illuskans are tall, fair-skinned folk with blue or steely gray eyes. Most have raven-black hair, 
 but those who inhabit the extreme northwest have blond, red, or light brown hair.       
@@ -623,6 +659,7 @@ but those who inhabit the extreme northwest have blond, red, or light brown hair
 
 
 def Mulan():
+    """Returns Markdown for Mulan explanation"""
     content = """\
 Dominant in the eastern and southeastern shores of the Inner Sea, the Mulan are generally tall, 
 slim, and amber-skinned, with eyes of hazel or brown. 
@@ -633,6 +670,7 @@ nobles and many other Mulan shave off all their hair.
 
 
 def Rashemi():
+    """Returns Markdown for Rashemi explanation"""
     content = """\
 Most often found east of the Inner Sea and often intermingled with the Mulan, Rashemis tend to be short, stout, and 
 muscular. They usually have dusky skin, dark eyes, and thick black hair.
@@ -641,6 +679,7 @@ muscular. They usually have dusky skin, dark eyes, and thick black hair.
 
 
 def Shou():
+    """Returns Markdown for Shou explanation"""
     content = """\
 The Shou are the most numerous and powerful ethnic group in Kara-Tur, far to the east of Faerun. They are yellowish-bronze in hue,
 with black hair and dark eyes. Shou surnames are usually presented before the given name.
@@ -649,6 +688,7 @@ with black hair and dark eyes. Shou surnames are usually presented before the gi
 
 
 def Tethyrian():
+    """Returns Markdown for Tethyrian explanation"""
     content = """\
 Widespread along the entire Sword Coast at the western edge of Faerun, Tethyrians are of medum build and height, with dusky skin that tends to grow
 fairer the farther north they dwell. Their hair and eye color varies widely, but brown hair and blue eyes are the most common.
@@ -658,6 +698,7 @@ Tethyrians primarily use Chondathan names.
 
 
 def Turami():
+    """Returns Markdown for Turami explanation"""
     content = """\
 Native to the southern shore of the Inner Sea, the Turami people are generally tall and muscular, with dark mahogony skin, curly 
 black hair, and dark eyes.
@@ -666,6 +707,7 @@ black hair, and dark eyes.
 
 
 def DragonbornMark():
+    """Returns Markdown for Dragonborn explanation"""
     content = """\
 # Dragonborn
 
@@ -678,6 +720,7 @@ others find themselves adrift, with no clear calling in life.
 
 
 def GnomeMark():
+    """Returns Markdown for Gnome explanation"""
     content = """\
 # Gnome
 
@@ -689,6 +732,7 @@ Gnomes take delight in life, enjoying every moment of invention, exploration, in
 
 
 def HalfelfMark():
+    """Returns Markdown for Hafl-Elf explanation"""
     content = """\
 # Half-Elf
 
@@ -703,6 +747,7 @@ life.
 
 
 def HalforcMark():
+    """Returns Markdown for Half-Orc explanation"""
     content = """\
 # Half-Orc
 
@@ -716,6 +761,7 @@ deeds and notoriety for their barbaric customs and savage fury.
 
 
 def TieflingMark():
+    """Returns Markdown for Tiefling explanation"""
     content = """\
 # Tiefling
 
