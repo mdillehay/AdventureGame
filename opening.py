@@ -38,6 +38,7 @@ from rich.console import Console
 TempNewChar = reactive("Hill Dwarf")
 TempNewName = ""
 TempNewClass = ""
+CharacterBuild = ""
 
 NewChar = game.Character()
 
@@ -88,12 +89,6 @@ class startScreenButton(Widget):
             Button("Exit", classes="startScreenBtn", id="exit"),
             id="startScreenMenu",
         )
-
-    # def on_button_pressed(self, event: Button.Pressed) -> None:
-    #     if event.button.label == "Create New Character":
-    #         app.push_screen("ChooseRace")
-    #     else:
-    #         pass
 
 
 class StartScreen(Widget):
@@ -201,9 +196,10 @@ class nameCreator(Widget):
         )
 
     def on_button_pressed(self, event: Button.Pressed):
-        global TempNewName
-        TempNewName = self.query_one("Input").value
-        NewChar.setName(TempNewName)
+        # global TempNewName
+        # TempNewName = self.query_one("Input").value
+        # NewChar.setName(TempNewName)
+        CharacterBuild.setName(self.query_one("Input").value)
         app.push_screen(AbilityScores())
 
 
@@ -234,8 +230,9 @@ class namePickerScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         global TempNewName
         if event.button.id == "picker_button":
-            TempNewName = self.option_choice
-            NewChar.setName(TempNewName)
+            # TempNewName = self.option_choice
+            # NewChar.setName(TempNewName)
+            CharacterBuild.setName(self.option_choice)
             app.switch_screen(AbilityScores())
 
 
@@ -365,9 +362,6 @@ class newCharacterStats(Widget):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         total = self.cost_total()
-        # for item in self.query("Input"):
-        #     if item.id in self.list_cost_labels:
-        #         total = total + int(item.value)
 
         if total > 27:
             app.push_screen(ModalScreen_27())
@@ -375,17 +369,17 @@ class newCharacterStats(Widget):
             atts_to_input = self.query(StatsInput)
             for att in atts_to_input:
                 if att.id == "strength":
-                    NewChar.setStrength(att.value)
+                    CharacterBuild.setStrength(int(att.value))
                 elif att.id == "dexterity":
-                    NewChar.setDexterity(att.value)
+                    CharacterBuild.setDexterity(int(att.value))
                 elif att.id == "constitution":
-                    NewChar.setConstitution(att.value)
+                    CharacterBuild.setConstitution(int(att.value))
                 elif att.id == "intelligence":
-                    NewChar.setIntelligence(att.value)
+                    CharacterBuild.setIntelligence(int(att.value))
                 elif att.id == "wisdom":
-                    NewChar.setWisdom(att.value)
+                    CharacterBuild.setWisdom(int(att.value))
                 elif att.id == "charisma":
-                    NewChar.setCharisma(att.value)
+                    CharacterBuild.setCharisma(int(att.value))
                 else:
                     pass
 
@@ -438,7 +432,7 @@ class ChooseClass(Widget):
         self.styles.width = "70w"
         self.styles.align_horizontal = "center"
         with TabbedContent():
-            for item in classList.data:
+            for item in classList.data:   #FIX: Need to fix the naming of module and import
                 c_class = item[0]
                 desc = item[1]
                 hit_die = item[2]
@@ -488,9 +482,7 @@ class ClassRadioButton(Widget):
         yield Button("Submit", classes="border")
 
     def on_button_pressed(self, event: Button.Pressed):
-        c_class = self.query_one(RadioSet).pressed_button
-        global TempNewClass
-        TempNewClass = c_class.id
+        CharacterBuild.setClass(self.query_one(RadioSet).pressed_button.label)
 
 
 class RaceRadioButton(Widget):
@@ -501,15 +493,19 @@ class RaceRadioButton(Widget):
             for item in character_dev_lists.character_races:
                 yield RadioButton(item, id=item)
         yield Label("Choose Character's Gender")
-        yield RadioSet("Male", "Female", "Other")
+        yield RadioSet("Male", "Female", "Other", id="age_radio_set")
         yield Button("Submit", classes="border")
 
     def on_button_pressed(self, event: Button.Pressed):
         race = self.query_one("#race_radio_set").pressed_button
         global TempNewChar
+        global CharacterBuild
         TempNewChar = race.id
+        CharacterBuild = game.ClassGetr(race.id)
+        CharacterBuild.setGender(self.query_one('#age_radio_set').pressed_button.label)
+        CharacterBuild.setRace(race.id)
         text_file = open("sample.txt", "wt")
-        text_file.write((race.id))
+        text_file.write(str(CharacterBuild.gender))
         text_file.write("\n")
         # text_file.write(str(TabbedContent.id))
         text_file.close()
@@ -546,7 +542,7 @@ class ChooseRace(Widget):
         "Tethyrian": game.Tethyrian(),
         "Turami": game.Turami(),
     }
-    global TempNewChar
+    # global TempNewChar
 
     def compose(self) -> ComposeResult:
         self.styles.align_horizontal = "center"
@@ -715,11 +711,30 @@ class TestScreen(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Container(Static(NewChar.strength))
+        yield Container(CharacterReview())
 
 
-# console = Console()
-# pixels = Pixels.from_image_path("bulbasaur.png")
+class CharacterReview(Widget):
+    """Widget to review the chosen Character attributes up to this point"""
+    def compose(self) -> ComposeResult:
+        md = f"# Here are the details for your {CharacterBuild.race} named {CharacterBuild.name}"
+        yield Markdown(md, id="CharacterReviewName")
+        yield DataTable(id="CR_tile")
+        yield Container(Static(pixels), id="CR_picture")
+        yield Dice()
+
+    def on_mount(self):
+        table = self.query_one(DataTable)
+        table.add_columns("Attribute", "Value")
+        for attr in CharacterBuild:
+            if attr[0] == "name":
+                pass
+            else:
+                table.add_row(attr[0].capitalize(),attr[1])
+
+
+console = Console()
+pixels = Pixels.from_image_path("img/dwarf_sm.png")
 
 
 class MainApp(App):

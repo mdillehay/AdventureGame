@@ -96,16 +96,30 @@ class Character:
         self.wisdom = wisdom
         self.charisma = charisma
 
-        self.sex = ""
-        self.height = ""
-        self.weight = ""
-        self.alignment = ""
-        self.language_prim = ""
-        self.language_sec = ""
+        self.strength_mod = 0
+        self.dexterity_mod = 0
+        self.constitution_mod = 0
+        self.intelligence_mod = 0
+        self.wisdom_mod = 0
+        self.charisma_mod = 0
+
+        self.height = None
+        self.weight = None
+        self.alignment = None
+        self.language_prim = None
+        self.language_sec = None
 
     def setName(self, name: str) -> None:
         """Set the characters Name"""
         self.name = name
+
+    def setRace(self, race: str) -> None:
+        """Store the characters Race"""
+        self.race = race
+
+    def setClass(self, char_class: str) -> None:
+        """Set the characters Class"""
+        self.char_class = char_class
 
     def setAge(self, age: str) -> None:
         """Set the chracters Age"""
@@ -117,27 +131,36 @@ class Character:
 
     def setStrength(self, strength: int) -> None:
         """Set the characters Strength"""
-        self.strength = strength
+        self.strength = strength + self.strength_mod
 
     def setDexterity(self, dexterity: int) -> None:
         """Set the characters Dexterity"""
-        self.dexterity = dexterity
+        self.dexterity = dexterity + self.dexterity_mod
 
     def setConstitution(self, constitution: int) -> None:
         """Set the characters Constiution"""
-        self.constitution = constitution
+        self.constitution = constitution + self.constitution_mod
 
     def setIntelligence(self, intelligence: int) -> None:
         """Set the characters Intelligence"""
-        self.intelligence = intelligence
+        self.intelligence = intelligence + self.intelligence_mod
 
     def setWisdom(self, wisdom: int) -> None:
         """Set the characters Wisdom"""
-        self.wisdom = wisdom
+        self.wisdom = wisdom + self.wisdom_mod
 
     def setCharisma(self, charisma: int) -> None:
         """Set the characters Charisma"""
-        self.charisma = charisma
+        self.charisma = charisma + self.charisma_mod
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class Dwarf(Character):
@@ -155,15 +178,25 @@ class Dwarf(Character):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setConstitution(self.constitution + 2)
+        self.constitution_mod = 2
+        self.setConstitution(self.constitution)
         self.darkvision = True
         self.combat_training = ["battleaxe", "handaxe", "light hammer", "warhammer"]
         self.speed = 25
         self.poison_adv = True
-        self.tool_prof = ""
+        self.tool_prof = None
         self.stonecunning = True
         self.language_prim = "Common"
         self.language_sec = "Dwarvish"
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class MountainDwarf(Dwarf):
@@ -180,9 +213,18 @@ class MountainDwarf(Dwarf):
         super().__init__(
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
-
-        self.setStrength(self.strength + 2)
+        self.strength_mod = 2
+        self.setStrength(self.strength)
         self.armor_prof = ["light", "medium"]
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class HillDwarf(Dwarf):
@@ -199,8 +241,18 @@ class HillDwarf(Dwarf):
         super().__init__(
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
+        
+        self.strength_mod = 4
+        self.setStrength(self.strength)
 
-        self.setStrength(self.strength + 4)
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class Elf(Character):
@@ -218,12 +270,22 @@ class Elf(Character):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setConstitution(self.constitution + 2)
+        self.constitution_mod = 2
+        self.setConstitution(self.constitution)
         self.darkvision = True
         self.keen_senses = True
         self.fey_ancestry = True
         self.language_prim = "Common"
         self.language_sec = "Elvish"
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class HighElf(Elf):
@@ -241,10 +303,20 @@ class HighElf(Elf):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setIntelligence(self.intelligence + 1)
-        self.combat_training = ["longsword", "shotsword", "shortbow", "longbow"]
+        self.intelligence_mod = 1
+        self.setIntelligence(self.intelligence)
+        self.combat_training = ["longsword", "shortsword", "shortbow", "longbow"]
         self.cantrip_count = 1
         self.extra_language_count = 1
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class WoodElf(Elf):
@@ -262,10 +334,20 @@ class WoodElf(Elf):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setWisdom(self.wisdom + 1)
-        self.combat_training = ["longsword", "shotsword", "shortbow", "longbow"]
+        self.wisdom_mod = 1
+        self.setWisdom(self.wisdom)
+        self.combat_training = ["longsword", "shortsword", "shortbow", "longbow"]
         self.fleet_feet = True
         self.mask_of_the_wild = True
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class DarkElf(Elf):
@@ -283,11 +365,21 @@ class DarkElf(Elf):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setCharisma(self.charisma + 1)
+        self.charisma_mod = 1
+        self.setCharisma(self.charisma)
         self.superior_darkvision = True
         self.sunlight_sensitivity = True
         self.drow_magic = True
         self.combat_training = ["rapiers", "shortswords", "hand crossbows"]
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class Halfling(Character):
@@ -305,13 +397,22 @@ class Halfling(Character):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setDexterity(self.dexterity + 2)
+        self.dexterity_mod = 2
+        self.setDexterity(self.dexterity)
         self.lucky = True
         self.brave = True
         self.nimbleness = True
         self.language_prim = "Common"
         self.language_sec = "Halfling"
 
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 class Lightfoot(Halfling):
     """Class definition of a Lightfoot Halfling, inherits from Halfling and Character"""
@@ -328,8 +429,18 @@ class Lightfoot(Halfling):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setCharisma(self.charisma + 1)
+        self.charisma_mod = 1
+        self.setCharisma(self.charisma)
         self.naturally_stealthy = True
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class Stout(Halfling):
@@ -347,8 +458,18 @@ class Stout(Halfling):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
-        self.setConstitution(self.constitution + 1)
+        self.constitution_mod = 1
+        self.setConstitution(self.constitution)
         self.stout_resilience = True
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class Human(Character):
@@ -366,6 +487,15 @@ class Human(Character):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
+
 
 class Dragonborn(Character):
     """Class definition of a Dragonborn, inherits from Character"""
@@ -381,6 +511,15 @@ class Dragonborn(Character):
         super().__init__(
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class Gnome(Character):
@@ -398,6 +537,15 @@ class Gnome(Character):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
+
 
 class ForestGnome(Gnome):
     """Class definition of a Forest Gnome, inherits from Gnome and Character"""
@@ -413,6 +561,15 @@ class ForestGnome(Gnome):
         super().__init__(
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class RockGnome(Gnome):
@@ -430,6 +587,15 @@ class RockGnome(Gnome):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
+
 
 class HalfElf(Character):
     """Class definition of a Half-Elf, inherits from Character"""
@@ -445,6 +611,15 @@ class HalfElf(Character):
         super().__init__(
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class HalfOrc(Character):
@@ -462,6 +637,15 @@ class HalfOrc(Character):
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
 
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
+
 
 class Tiefling(Character):
     """Class definition of a Tiefling, inherits from Character"""
@@ -477,6 +661,15 @@ class Tiefling(Character):
         super().__init__(
             strength, dexterity, constitution, intelligence, wisdom, charisma
         )
+
+    def __iter__(self):
+        for item in self.__dict__.items():
+            if item[1] is None:
+                pass
+            elif item[1] == 0:
+                pass
+            else:
+                yield item
 
 
 class Wizard(Character):
